@@ -1,0 +1,297 @@
+:root{
+  --navy: #0b1f3b;
+  --navy-2: #0f2a52;
+  --ink: #0a1020;
+  --muted: #55657f;
+  --border: rgba(11,31,59,0.14);
+  --bg: #f7f9fc;
+  --card: #ffffff;
+
+  --red: #d72638;
+  --red-2: #b81f2f;
+
+  --shadow: 0 10px 30px rgba(10,16,32,0.08);
+  --shadow-2: 0 8px 18px rgba(10,16,32,0.08);
+
+  --radius: 16px;
+  --radius-sm: 12px;
+}
+
+* { box-sizing: border-box; }
+
+.page{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 18px 40px;
+}
+
+/* -------------------- Top Bar -------------------- */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 16px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(11,31,59,0.06), rgba(11,31,59,0.02));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+}
+
+.brand{
+  display:flex;
+  gap: 14px;
+  align-items:flex-start;
+}
+
+.brandMark{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 30% 30%, rgba(215,38,56,0.95), rgba(215,38,56,0.55) 40%, rgba(11,31,59,0.95) 85%);
+  box-shadow: 0 10px 20px rgba(215,38,56,0.18);
+}
+
+.title{
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+
+.subtitle{
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* -------- Account header -------- */
+.topbarRight{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+
+.accountPill{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(11,31,59,0.04);
+}
+
+.accountAvatar{
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: white;
+  font-weight: 800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.accountText{
+  display:flex;
+  flex-direction:column;
+  line-height: 1.1;
+}
+
+.accountPrimary{
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.accountSecondary{
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* -------------------- Layout -------------------- */
+.grid{
+  margin-top: 18px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 980px){
+  .grid{ grid-template-columns: 1fr 1.4fr; }
+}
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.cardHeader{
+  display:flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.cardTitle{
+  margin: 0;
+  color: var(--navy);
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.cardHint{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* -------------------- Forms -------------------- */
+.form{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 680px){
+  .form{ grid-template-columns: 1fr 1fr; }
+  .fieldFull{ grid-column: 1 / -1; }
+}
+
+.field{ display:flex; flex-direction:column; gap: 6px; }
+
+.label{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.input{
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 11px 12px;
+  outline: none;
+  background: #fff;
+  color: var(--ink);
+}
+
+.textarea{ resize: vertical; }
+
+/* -------------------- Buttons -------------------- */
+.btn{
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.btnPrimary{
+  background: var(--red);
+  color: white;
+}
+
+.btnPrimary:hover{ background: var(--red-2); }
+
+.btnGhost{
+  background: transparent;
+  border-color: var(--border);
+  color: var(--navy);
+}
+
+.btnDanger{
+  background: rgba(215,38,56,0.10);
+  border-color: rgba(215,38,56,0.25);
+  color: var(--red);
+}
+
+.btnSmall{
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* -------------------- Jobs -------------------- */
+.jobsGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 680px){
+  .jobsGrid{ grid-template-columns: 1fr 1fr; }
+}
+
+.jobCard{
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  background: #fff;
+}
+
+.jobTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.jobCompany{
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.jobPosition{
+  color: var(--ink);
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.jobMeta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top: 12px;
+}
+
+.jobButtons{
+  display:flex;
+  gap: 8px;
+}
+
+/* Status pills */
+.pill{
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.pill--applied{ background: rgba(11,31,59,0.05); }
+.pill--interview{ background: rgba(215,38,56,0.08); color: var(--red); }
+.pill--offer{ background: rgba(15,42,82,0.08); }
+.pill--rejected{ background: rgba(10,16,32,0.06); }
+
+/* -------------------- Footer -------------------- */
+.footer{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.dot{
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(11,31,59,0.35);
+}

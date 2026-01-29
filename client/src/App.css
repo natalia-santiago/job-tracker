@@ -1,0 +1,13 @@
+/* IMPORTANT: App.css should NOT fight page layout or centering */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+
+  /* Remove Vite defaults */
+  margin: 0;
+  padding: 0;
+
+  /* Let individual pages control layout */
+  display: block;
+}
