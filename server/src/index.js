@@ -26,7 +26,7 @@ app.use(
 
       if (allowedOrigins.includes(origin)) return cb(null, true);
 
-      return cb(new Error(`CORS blocked for origin: ${origin}`));
+      return cb(null, false);
     },
     credentials: false, // IMPORTANT: using Bearer token, not cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],

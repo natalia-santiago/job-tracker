@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import AddJob from "./pages/AddJob";
 
 export default function App() {
   const token = localStorage.getItem("token");
@@ -16,10 +17,15 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
 
-      {/* protected route */}
+      {/* protected routes */}
       <Route
         path="/dashboard"
         element={token ? <Dashboard /> : <Navigate to="/login" replace />}
+      />
+
+      <Route
+        path="/add-job"
+        element={token ? <AddJob /> : <Navigate to="/login" replace />}
       />
 
       {/* catch-all */}

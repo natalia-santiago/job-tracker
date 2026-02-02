@@ -6,6 +6,16 @@ import "./Dashboard.css";
 export default function Dashboard() {
   const navigate = useNavigate();
 
+  /* -------------------- Auth gate (run first) -------------------- */
+  const [token] = useState(() => localStorage.getItem("token") || "");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
   /* -------------------- State -------------------- */
   const [jobs, setJobs] = useState([]);
   const [user, setUser] = useState(() => {
@@ -36,19 +46,25 @@ export default function Dashboard() {
 
   /* -------------------- Load user (Account header) -------------------- */
   const loadUser = async () => {
-    if (user) return; // already loaded
+    const t = localStorage.getItem("token");
+    if (!t) return logout();
+
+    if (user?.email) return;
 
     try {
       const res = await api.get("/auth/me");
       setUser(res.data.user);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-    } catch {
-      logout();
+    } catch (err) {
+      handleApiError(err, "Failed to load user");
     }
   };
 
   /* -------------------- Load jobs -------------------- */
   const loadJobs = async () => {
+    const t = localStorage.getItem("token");
+    if (!t) return logout();
+
     setLoading(true);
     setError("");
 
@@ -63,15 +79,19 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    if (!token) return;
+
     loadUser();
     loadJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   /* -------------------- Derived -------------------- */
   const jobCount = useMemo(() => jobs.length, [jobs]);
 
   /* -------------------- UI -------------------- */
+  if (!token) return null;
+
   return (
     <div className="page">
       {/* Top Bar */}
@@ -92,6 +112,14 @@ export default function Dashboard() {
               <div style={{ fontSize: 12, opacity: 0.75 }}>{user.email}</div>
             </div>
           )}
+
+          {/* ✅ Add Job button */}
+          <button
+            className="btn btnSmall"
+            onClick={() => navigate("/add-job")}
+          >
+            + Add Job
+          </button>
 
           <button className="btn btnGhost btnSmall" onClick={logout}>
             Logout
@@ -125,7 +153,19 @@ export default function Dashboard() {
               <div className="emptyIcon">+</div>
               <div>
                 <div className="emptyTitle">No jobs yet</div>
-                <div className="emptyBody">Start by adding your first application.</div>
+                <div className="emptyBody">
+                  Start by adding your first application.
+                </div>
+
+                {/* ✅ Add CTA inside empty state */}
+                <div style={{ marginTop: 12 }}>
+                  <button
+                    className="btn"
+                    onClick={() => navigate("/add-job")}
+                  >
+                    + Add Your First Job
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
