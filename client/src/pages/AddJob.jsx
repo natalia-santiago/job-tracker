@@ -1,23 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "./Dashboard.css";
 
-export default function Dashboard() {
+const STATUS_OPTIONS = ["applied", "interview", "offer", "rejected"];
+
+export default function AddJob() {
   const navigate = useNavigate();
 
-  /* -------------------- Auth gate (run first) -------------------- */
+  /* -------------------- Auth gate -------------------- */
   const [token] = useState(() => localStorage.getItem("token") || "");
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
+    if (!token) navigate("/login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* -------------------- State -------------------- */
-  const [jobs, setJobs] = useState([]);
+  /* -------------------- User (for header) -------------------- */
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user"));
@@ -26,10 +25,37 @@ export default function Dashboard() {
     }
   });
 
-  const [loading, setLoading] = useState(true);
+  const initials = useMemo(() => {
+    const name = user?.name || "";
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return "U";
+    const first = parts[0]?.[0] || "";
+    const last = parts.length > 1 ? parts[parts.length - 1]?.[0] : "";
+    return (first + last).toUpperCase() || "U";
+  }, [user]);
+
+  /* -------------------- Form state -------------------- */
+  const [form, setForm] = useState({
+    company: "",
+    position: "",
+    status: "applied",
+    notes: "",
+  });
+
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  /* -------------------- Auth helpers -------------------- */
+  // Toast (optional, matches your Dashboard pattern)
+  const [toast, setToast] = useState(null); // { type: "success" | "error", message }
+  const toastTimer = useRef(null);
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2800);
+  };
+
+  /* -------------------- Helpers -------------------- */
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -41,10 +67,11 @@ export default function Dashboard() {
       logout();
       return;
     }
-    setError(err?.response?.data?.error || fallback);
+    const msg = err?.response?.data?.error || fallback;
+    setError(msg);
+    showToast("error", msg);
   };
 
-  /* -------------------- Load user (Account header) -------------------- */
   const loadUser = async () => {
     const t = localStorage.getItem("token");
     if (!t) return logout();
@@ -60,43 +87,51 @@ export default function Dashboard() {
     }
   };
 
-  /* -------------------- Load jobs -------------------- */
-  const loadJobs = async () => {
-    const t = localStorage.getItem("token");
-    if (!t) return logout();
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await api.get("/jobs");
-      setJobs(res.data);
-    } catch (err) {
-      handleApiError(err, "Failed to load jobs");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!token) return;
-
     loadUser();
-    loadJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* -------------------- Derived -------------------- */
-  const jobCount = useMemo(() => jobs.length, [jobs]);
+  /* -------------------- Submit -------------------- */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const payload = {
+      company: form.company.trim(),
+      position: form.position.trim(),
+      status: form.status,
+      notes: form.notes.trim(),
+    };
+
+    if (!payload.company || !payload.position) {
+      const msg = "Company and Position are required.";
+      setError(msg);
+      showToast("error", msg);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await api.post("/jobs", payload);
+      showToast("success", "Job added");
+      // go back to dashboard after success
+      navigate("/dashboard");
+    } catch (err) {
+      handleApiError(err, "Failed to add job");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   /* -------------------- UI -------------------- */
   if (!token) return null;
 
   return (
     <div className="page">
-      {/* Top Bar */}
       <header className="topbar">
-        <div className="brand">
+        <div className="brand" style={{ cursor: "pointer" }} onClick={() => navigate("/dashboard")}>
           <div className="brandMark" />
           <div>
             <h1 className="title">Job Tracker</h1>
@@ -104,26 +139,24 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Account Section */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="topbarRight">
           {user && (
             <button
               type="button"
+              className="accountPill"
               onClick={() => navigate("/account")}
-              className="btn btnGhost btnSmall"
-              style={{
-                textAlign: "right",
-                lineHeight: 1.2,
-                padding: "8px 10px",
-              }}
               title="View account"
+              style={{ cursor: "pointer" }}
             >
-              <div style={{ fontWeight: 700 }}>{user.name}</div>
-              <div style={{ fontSize: 12, opacity: 0.75 }}>{user.email}</div>
+              <div className="accountAvatar">{initials}</div>
+              <div className="accountText">
+                <div className="accountPrimary">{user.name}</div>
+                <div className="accountSecondary">{user.email}</div>
+              </div>
             </button>
           )}
 
-          <button className="btn btnGhost btnSmall" onClick={logout}>
+          <button type="button" className="btn btnGhost btnSmall" onClick={logout}>
             Logout
           </button>
         </div>
@@ -136,69 +169,101 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Main */}
-      <main className="grid">
-        {/* Summary */}
+      {toast && (
+        <div className={`toast toast--${toast.type}`} role="status" aria-live="polite">
+          {toast.message}
+        </div>
+      )}
+
+      <main className="dashboardGrid">
         <section className="card">
-          <div
-            className="cardHeader"
-            style={{ display: "flex", alignItems: "center", gap: 12 }}
-          >
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <h2 className="cardTitle">Overview</h2>
-              <span className="cardHint">{jobCount} total jobs</span>
+          <div className="cardHeader" style={{ alignItems: "center" }}>
+            <div style={{ minWidth: 0 }}>
+              <h2 className="cardTitle">Add Job</h2>
+              <span className="cardHint">Create a new application entry</span>
             </div>
 
-            {/* ✅ Add Job button moved here */}
-            <button className="btn btnSmall" onClick={() => navigate("/add-job")}>
-              + Add Job
-            </button>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                className="btn btnGhost btnSmall"
+                onClick={() => navigate("/dashboard")}
+                disabled={saving}
+              >
+                ← Back
+              </button>
+            </div>
           </div>
 
-          {loading ? (
-            <div className="empty">
-              <div className="spinner" />
-              <span>Loading jobs…</span>
+          <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontWeight: 700 }}>Company</label>
+              <input
+                className="input"
+                value={form.company}
+                onChange={(e) => setForm((p) => ({ ...p, company: e.target.value }))}
+                placeholder="e.g., DLB Associates"
+                disabled={saving}
+                autoFocus
+              />
             </div>
-          ) : jobCount === 0 ? (
-            <div className="empty">
-              <div className="emptyIcon">+</div>
-              <div>
-                <div className="emptyTitle">No jobs yet</div>
-                <div className="emptyBody">
-                  Start by adding your first application.
-                </div>
 
-                <div style={{ marginTop: 12 }}>
-                  <button className="btn" onClick={() => navigate("/add-job")}>
-                    + Add Your First Job
-                  </button>
-                </div>
-              </div>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontWeight: 700 }}>Position</label>
+              <input
+                className="input"
+                value={form.position}
+                onChange={(e) => setForm((p) => ({ ...p, position: e.target.value }))}
+                placeholder="e.g., Junior Full-Stack Developer"
+                disabled={saving}
+              />
             </div>
-          ) : (
-            <div className="jobsGrid">
-              {jobs.map((job) => (
-                <article className="jobCard" key={job._id}>
-                  <div className="jobTop">
-                    <div>
-                      <div className="jobCompany">{job.company}</div>
-                      <div className="jobPosition">{job.position}</div>
-                    </div>
-                    <span className={`pill pill--${job.status}`}>{job.status}</span>
-                  </div>
 
-                  {job.notes && <p className="jobNotes">{job.notes}</p>}
-
-                  <div className="jobMeta">
-                    <span className="jobDate">
-                      Added {new Date(job.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </article>
-              ))}
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontWeight: 700 }}>Status</label>
+              <select
+                className="input"
+                value={form.status}
+                onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
+                disabled={saving}
+              >
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
+
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontWeight: 700 }}>Notes</label>
+              <textarea
+                className="input textarea"
+                rows={5}
+                value={form.notes}
+                onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
+                placeholder="Interview dates, recruiter contact, links, reminders…"
+                disabled={saving}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 6 }}>
+              <button
+                type="button"
+                className="btn btnGhost"
+                onClick={() =>
+                  setForm({ company: "", position: "", status: "applied", notes: "" })
+                }
+                disabled={saving}
+              >
+                Clear
+              </button>
+
+              <button type="submit" className="btn btnPrimary" disabled={saving}>
+                {saving ? "Saving..." : "Save Job"}
+              </button>
+            </div>
+          </form>
         </section>
       </main>
 
