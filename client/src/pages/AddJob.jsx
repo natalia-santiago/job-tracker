@@ -1,80 +1,128 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "./Dashboard.css";
 
-export default function AddJob() {
+export default function Dashboard() {
   const navigate = useNavigate();
 
+  /* -------------------- Auth gate (run first) -------------------- */
   const [token] = useState(() => localStorage.getItem("token") || "");
 
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
-  const [status, setStatus] = useState("applied");
-  const [notes, setNotes] = useState("");
-
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-
   useEffect(() => {
-    if (!token) navigate("/login");
+    if (!token) {
+      navigate("/login");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
+  /* -------------------- State -------------------- */
+  const [jobs, setJobs] = useState([]);
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      return null;
+    }
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  /* -------------------- Auth helpers -------------------- */
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!company.trim() || !position.trim()) {
-      setError("Company and Position are required.");
+  const handleApiError = (err, fallback) => {
+    if (err?.response?.status === 401) {
+      logout();
       return;
     }
+    setError(err?.response?.data?.error || fallback);
+  };
+
+  /* -------------------- Load user (Account header) -------------------- */
+  const loadUser = async () => {
+    const t = localStorage.getItem("token");
+    if (!t) return logout();
+
+    if (user?.email) return;
 
     try {
-      setSaving(true);
-
-      await api.post("/jobs", {
-        company: company.trim(),
-        position: position.trim(),
-        status,
-        notes: notes.trim(),
-      });
-
-      navigate("/dashboard");
+      const res = await api.get("/auth/me");
+      setUser(res.data.user);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
     } catch (err) {
-      if (err?.response?.status === 401) {
-        logout();
-        return;
-      }
-      setError(err?.response?.data?.error || "Failed to add job");
-    } finally {
-      setSaving(false);
+      handleApiError(err, "Failed to load user");
     }
   };
 
+  /* -------------------- Load jobs -------------------- */
+  const loadJobs = async () => {
+    const t = localStorage.getItem("token");
+    if (!t) return logout();
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await api.get("/jobs");
+      setJobs(res.data);
+    } catch (err) {
+      handleApiError(err, "Failed to load jobs");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!token) return;
+
+    loadUser();
+    loadJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  /* -------------------- Derived -------------------- */
+  const jobCount = useMemo(() => jobs.length, [jobs]);
+
+  /* -------------------- UI -------------------- */
   if (!token) return null;
 
   return (
     <div className="page">
+      {/* Top Bar */}
       <header className="topbar">
         <div className="brand">
           <div className="brandMark" />
           <div>
-            <h1 className="title">Add Job</h1>
-            <p className="subtitle">Create a new job application entry</p>
+            <h1 className="title">Job Tracker</h1>
+            <p className="subtitle">Track applications, interviews, and offers</p>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <button className="btn btnGhost btnSmall" onClick={() => navigate("/dashboard")}>
-            Back
-          </button>
+        {/* Account Section */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {user && (
+            <button
+              type="button"
+              onClick={() => navigate("/account")}
+              className="btn btnGhost btnSmall"
+              style={{
+                textAlign: "right",
+                lineHeight: 1.2,
+                padding: "8px 10px",
+              }}
+              title="View account"
+            >
+              <div style={{ fontWeight: 700 }}>{user.name}</div>
+              <div style={{ fontSize: 12, opacity: 0.75 }}>{user.email}</div>
+            </button>
+          )}
+
           <button className="btn btnGhost btnSmall" onClick={logout}>
             Logout
           </button>
@@ -88,70 +136,69 @@ export default function AddJob() {
         </div>
       )}
 
+      {/* Main */}
       <main className="grid">
+        {/* Summary */}
         <section className="card">
-          <div className="cardHeader">
-            <h2 className="cardTitle">Job Details</h2>
-            <span className="cardHint">All fields are private to your account</span>
+          <div
+            className="cardHeader"
+            style={{ display: "flex", alignItems: "center", gap: 12 }}
+          >
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h2 className="cardTitle">Overview</h2>
+              <span className="cardHint">{jobCount} total jobs</span>
+            </div>
+
+            {/* ✅ Add Job button moved here */}
+            <button className="btn btnSmall" onClick={() => navigate("/add-job")}>
+              + Add Job
+            </button>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-            <label style={{ display: "grid", gap: 6 }}>
-              <span style={{ fontWeight: 600 }}>Company *</span>
-              <input
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                placeholder="e.g., DLB Associates"
-                style={inputStyle}
-              />
-            </label>
-
-            <label style={{ display: "grid", gap: 6 }}>
-              <span style={{ fontWeight: 600 }}>Position *</span>
-              <input
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-                placeholder="e.g., Commissioning Field Technician II"
-                style={inputStyle}
-              />
-            </label>
-
-            <label style={{ display: "grid", gap: 6 }}>
-              <span style={{ fontWeight: 600 }}>Status</span>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}>
-                <option value="applied">applied</option>
-                <option value="interview">interview</option>
-                <option value="offer">offer</option>
-                <option value="rejected">rejected</option>
-              </select>
-            </label>
-
-            <label style={{ display: "grid", gap: 6 }}>
-              <span style={{ fontWeight: 600 }}>Notes</span>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Optional notes (recruiter name, next steps, etc.)"
-                rows={5}
-                style={{ ...inputStyle, resize: "vertical" }}
-              />
-            </label>
-
-            <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-              <button className="btn" type="submit" disabled={saving}>
-                {saving ? "Saving..." : "Save Job"}
-              </button>
-
-              <button
-                className="btn btnGhost"
-                type="button"
-                onClick={() => navigate("/dashboard")}
-                disabled={saving}
-              >
-                Cancel
-              </button>
+          {loading ? (
+            <div className="empty">
+              <div className="spinner" />
+              <span>Loading jobs…</span>
             </div>
-          </form>
+          ) : jobCount === 0 ? (
+            <div className="empty">
+              <div className="emptyIcon">+</div>
+              <div>
+                <div className="emptyTitle">No jobs yet</div>
+                <div className="emptyBody">
+                  Start by adding your first application.
+                </div>
+
+                <div style={{ marginTop: 12 }}>
+                  <button className="btn" onClick={() => navigate("/add-job")}>
+                    + Add Your First Job
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="jobsGrid">
+              {jobs.map((job) => (
+                <article className="jobCard" key={job._id}>
+                  <div className="jobTop">
+                    <div>
+                      <div className="jobCompany">{job.company}</div>
+                      <div className="jobPosition">{job.position}</div>
+                    </div>
+                    <span className={`pill pill--${job.status}`}>{job.status}</span>
+                  </div>
+
+                  {job.notes && <p className="jobNotes">{job.notes}</p>}
+
+                  <div className="jobMeta">
+                    <span className="jobDate">
+                      Added {new Date(job.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
       </main>
 
@@ -163,11 +210,3 @@ export default function AddJob() {
     </div>
   );
 }
-
-const inputStyle = {
-  padding: "10px 12px",
-  borderRadius: 12,
-  border: "1px solid rgba(0,0,0,0.12)",
-  outline: "none",
-  fontSize: 14,
-};

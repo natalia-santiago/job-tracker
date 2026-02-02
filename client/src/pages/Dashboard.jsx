@@ -44,7 +44,16 @@ export default function Dashboard() {
     setError(err?.response?.data?.error || fallback);
   };
 
-  /* -------------------- Load user (Account header) -------------------- */
+  const initials = useMemo(() => {
+    const name = user?.name || "";
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return "U";
+    const first = parts[0]?.[0] || "";
+    const last = parts.length > 1 ? parts[parts.length - 1]?.[0] : "";
+    return (first + last).toUpperCase() || "U";
+  }, [user]);
+
+  /* -------------------- Load user -------------------- */
   const loadUser = async () => {
     const t = localStorage.getItem("token");
     if (!t) return logout();
@@ -94,7 +103,6 @@ export default function Dashboard() {
 
   return (
     <div className="page">
-      {/* Top Bar */}
       <header className="topbar">
         <div className="brand">
           <div className="brandMark" />
@@ -104,24 +112,24 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Account Section */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="topbarRight">
           {user && (
-            <div style={{ textAlign: "right", lineHeight: 1.2 }}>
-              <div style={{ fontWeight: 700 }}>{user.name}</div>
-              <div style={{ fontSize: 12, opacity: 0.75 }}>{user.email}</div>
-            </div>
+            <button
+              type="button"
+              className="accountPill"
+              onClick={() => navigate("/account")}
+              title="View account"
+              style={{ cursor: "pointer" }}
+            >
+              <div className="accountAvatar">{initials}</div>
+              <div className="accountText">
+                <div className="accountPrimary">{user.name}</div>
+                <div className="accountSecondary">{user.email}</div>
+              </div>
+            </button>
           )}
 
-          {/* ✅ Add Job button */}
-          <button
-            className="btn btnSmall"
-            onClick={() => navigate("/add-job")}
-          >
-            + Add Job
-          </button>
-
-          <button className="btn btnGhost btnSmall" onClick={logout}>
+          <button type="button" className="btn btnGhost btnSmall" onClick={logout}>
             Logout
           </button>
         </div>
@@ -134,13 +142,20 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Main */}
       <main className="grid">
-        {/* Summary */}
         <section className="card">
-          <div className="cardHeader">
-            <h2 className="cardTitle">Overview</h2>
-            <span className="cardHint">{jobCount} total jobs</span>
+          <div className="cardHeader" style={{ alignItems: "center" }}>
+            <div style={{ minWidth: 0 }}>
+              <h2 className="cardTitle">Overview</h2>
+              <span className="cardHint">{jobCount} total jobs</span>
+            </div>
+
+            <button
+              className="btn btnPrimary btnSmall"
+              onClick={() => navigate("/add-job")}
+            >
+              + Add Job
+            </button>
           </div>
 
           {loading ? (
@@ -157,10 +172,9 @@ export default function Dashboard() {
                   Start by adding your first application.
                 </div>
 
-                {/* ✅ Add CTA inside empty state */}
                 <div style={{ marginTop: 12 }}>
                   <button
-                    className="btn"
+                    className="btn btnPrimary"
                     onClick={() => navigate("/add-job")}
                   >
                     + Add Your First Job
