@@ -12,10 +12,13 @@ const app = express();
 
 /* -------------------- Middleware -------------------- */
 
-// Configure allowed origins (local + deployed)
+// ✅ Hard-include your known deployed frontend URL (Netlify)
+// ✅ Keep env-based CLIENT_URL support too
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.CLIENT_URL, // set this to your deployed frontend URL on Render later
+  "http://localhost:3000",
+  "https://job-tracker-frontend.netlify.app",
+  process.env.CLIENT_URL, // optional: can be same Netlify URL
 ].filter(Boolean);
 
 app.use(
@@ -26,13 +29,17 @@ app.use(
 
       if (allowedOrigins.includes(origin)) return cb(null, true);
 
-      return cb(null, false);
+      // ❌ Block anything else
+      return cb(new Error(`CORS blocked for origin: ${origin}`));
     },
-    credentials: false, // IMPORTANT: using Bearer token, not cookies
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: false, // using Bearer token, not cookies
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// ✅ Ensure preflight OPTIONS requests succeed
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -53,7 +60,7 @@ app.get("/", (req, res) => {
 
 /* -------------------- Global Error Handler -------------------- */
 app.use((err, req, res, next) => {
-  console.error("❌ UNHANDLED SERVER ERROR:", err);
+  console.error("❌ ERROR:", err?.message || err);
   res.status(500).json({ error: err?.message || "Server error" });
 });
 
@@ -71,8 +78,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log("✅ Allowed CORS origins:", allowedOrigins);
 });
-
-
-
-
