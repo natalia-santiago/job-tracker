@@ -5,10 +5,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AddJob from "./pages/AddJob";
 import Account from "./pages/Account";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
-  const token = localStorage.getItem("token");
-
   return (
     <Routes>
       {/* default route */}
@@ -19,20 +18,11 @@ export default function App() {
       <Route path="/login" element={<Login />} />
 
       {/* protected routes */}
-      <Route
-        path="/dashboard"
-        element={token ? <Dashboard /> : <Navigate to="/login" replace />}
-      />
-
-      <Route
-        path="/add-job"
-        element={token ? <AddJob /> : <Navigate to="/login" replace />}
-      />
-
-      <Route
-        path="/account"
-        element={token ? <Account /> : <Navigate to="/login" replace />}
-      />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/add-job" element={<AddJob />} />
+        <Route path="/account" element={<Account />} />
+      </Route>
 
       {/* catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />

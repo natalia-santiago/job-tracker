@@ -95,8 +95,9 @@ export default function Account() {
         </div>
       )}
 
-      <main className="grid">
-        <section className="card" style={{ maxWidth: 720, margin: "0 auto" }}>
+      {/* ✅ centered like Login/Register */}
+      <main className="grid" style={{ justifyItems: "center" }}>
+        <section className="card" style={{ width: "100%", maxWidth: 720 }}>
           <div className="cardHeader">
             <h2 className="cardTitle">Account Information</h2>
             <span className="cardHint">Pulled from your authenticated session</span>
@@ -133,14 +134,7 @@ export default function Account() {
                 />
               )}
 
-              <div
-                style={{
-                  marginTop: 6,
-                  display: "flex",
-                  gap: 10,
-                  flexWrap: "wrap",
-                }}
-              >
+              <div style={{ marginTop: 6, display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <button
                   type="button"
                   className="btn btnPrimary"

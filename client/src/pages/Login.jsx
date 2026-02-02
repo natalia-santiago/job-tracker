@@ -49,6 +49,7 @@ export default function Login() {
 
         <div className="topbarRight">
           <button
+            type="button"
             className="btn btnGhost btnSmall"
             onClick={() => navigate("/register")}
           >
@@ -64,14 +65,19 @@ export default function Login() {
         </div>
       )}
 
-      <main className="grid">
-        <section className="card" style={{ maxWidth: 520, margin: "0 auto" }}>
+      {/* ✅ centered */}
+      <main className="grid" style={{ justifyItems: "center" }}>
+        <section className="card" style={{ width: "100%", maxWidth: 420 }}>
           <div className="cardHeader">
             <h2 className="cardTitle">Login</h2>
             <span className="cardHint">Welcome back</span>
           </div>
 
-          <form onSubmit={handleSubmit} className="form" style={{ gridTemplateColumns: "1fr" }}>
+          <form
+            onSubmit={handleSubmit}
+            className="form"
+            style={{ gridTemplateColumns: "1fr" }}
+          >
             <div className="field">
               <div className="label">Email</div>
               <input

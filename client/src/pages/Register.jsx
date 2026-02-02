@@ -48,7 +48,11 @@ export default function Register() {
         </div>
 
         <div className="topbarRight">
-          <button className="btn btnGhost btnSmall" onClick={() => navigate("/login")}>
+          <button
+            type="button"
+            className="btn btnGhost btnSmall"
+            onClick={() => navigate("/login")}
+          >
             Login
           </button>
         </div>
@@ -61,14 +65,19 @@ export default function Register() {
         </div>
       )}
 
-      <main className="grid">
-        <section className="card" style={{ maxWidth: 520, margin: "0 auto" }}>
+      {/* ✅ centered */}
+      <main className="grid" style={{ justifyItems: "center" }}>
+        <section className="card" style={{ width: "100%", maxWidth: 420 }}>
           <div className="cardHeader">
             <h2 className="cardTitle">Create an account</h2>
             <span className="cardHint">It only takes a minute</span>
           </div>
 
-          <form onSubmit={handleSubmit} className="form" style={{ gridTemplateColumns: "1fr" }}>
+          <form
+            onSubmit={handleSubmit}
+            className="form"
+            style={{ gridTemplateColumns: "1fr" }}
+          >
             <div className="field">
               <div className="label">Name</div>
               <input
