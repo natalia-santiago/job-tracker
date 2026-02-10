@@ -12,71 +12,62 @@ const app = express();
 
 /* -------------------- Middleware -------------------- */
 
-// ✅ Hard-include your known deployed frontend URL (Netlify)
-// ✅ Keep env-based CLIENT_URL support too
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:3000",
-  "https://job-tracker-frontend.netlify.app",
-  process.env.CLIENT_URL, // optional: can be same Netlify URL
+  process.env.CLIENT_URL, // your Netlify URL should be here in Render env vars
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      // Allow tools like curl/postman or same-origin (no Origin header)
-      if (!origin) return cb(null, true);
+const corsOptions = {
+  origin: (origin, cb) => {
+    // Allow tools like curl/postman or same-origin (no Origin header)
+    if (!origin) return cb(null, true);
 
-      if (allowedOrigins.includes(origin)) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
 
-      // ❌ Block anything else
-      return cb(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    credentials: false, // using Bearer token, not cookies
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+    return cb(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: false, // using Bearer token, not cookies
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // ✅ PATCH added
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-// ✅ Ensure preflight OPTIONS requests succeed
-app.options("*", cors());
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight requests for all routes
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
 // Request logger (helps debugging)
 app.use((req, res, next) => {
-  console.log(`[REQ] ${req.method} ${req.originalUrl}`);
+  console.log(`[REQ] ${req.method} ${req.url}`);
   next();
 });
 
 /* -------------------- Routes -------------------- */
+app.get("/", (req, res) => {
+  res.send("Job Tracker API is running ✅");
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 
-/* -------------------- Health Check -------------------- */
-app.get("/", (req, res) => {
-  res.send("Job Tracker API running");
-});
-
-/* -------------------- Global Error Handler -------------------- */
+/* -------------------- Error handling -------------------- */
 app.use((err, req, res, next) => {
-  console.error("❌ ERROR:", err?.message || err);
-  res.status(500).json({ error: err?.message || "Server error" });
+  console.error("❌ Error:", err.message || err);
+  res.status(500).json({ message: err.message || "Server error" });
 });
 
-/* -------------------- Database -------------------- */
+/* -------------------- DB + Server -------------------- */
+const PORT = process.env.PORT || 5000;
+
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err);
     process.exit(1);
   });
-
-/* -------------------- Server -------------------- */
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log("✅ Allowed CORS origins:", allowedOrigins);
-});
