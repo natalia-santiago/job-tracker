@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 
-/* -------------------- Middleware -------------------- */
+/* -------------------- CORS (NO wildcard route) -------------------- */
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -19,25 +19,33 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true); // allow Postman/curl
+    // allow Postman/curl or same-origin (no Origin header)
+    if (!origin) return cb(null, true);
 
     if (allowedOrigins.includes(origin)) return cb(null, true);
 
     return cb(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: false,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // ✅ PATCH included
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+// ✅ Handle CORS for all requests
 app.use(cors(corsOptions));
 
-// ✅ FIX: "*" crashes on Render’s router; use "/*" instead
-app.options("/*", cors(corsOptions));
+// ✅ Handle preflight WITHOUT app.options("*") / app.options("/*")
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return cors(corsOptions)(req, res, () => res.sendStatus(204));
+  }
+  next();
+});
 
+/* -------------------- Middleware -------------------- */
 app.use(express.json());
 
-// Request logger
+// Request logger (helps debugging)
 app.use((req, res, next) => {
   console.log(`[REQ] ${req.method} ${req.url}`);
   next();
