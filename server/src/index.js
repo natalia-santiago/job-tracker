@@ -14,31 +14,30 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.CLIENT_URL, // your Netlify URL should be here in Render env vars
+  process.env.CLIENT_URL, // set to https://job-tracker-frontend.netlify.app in Render env vars
 ].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, cb) => {
-    // Allow tools like curl/postman or same-origin (no Origin header)
-    if (!origin) return cb(null, true);
+    if (!origin) return cb(null, true); // allow Postman/curl
 
     if (allowedOrigins.includes(origin)) return cb(null, true);
 
     return cb(new Error(`CORS blocked for origin: ${origin}`));
   },
-  credentials: false, // using Bearer token, not cookies
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // ✅ PATCH added
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // ✅ PATCH included
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
 
-// ✅ Handle preflight requests for all routes
-app.options("*", cors(corsOptions));
+// ✅ FIX: "*" crashes on Render’s router; use "/*" instead
+app.options("/*", cors(corsOptions));
 
 app.use(express.json());
 
-// Request logger (helps debugging)
+// Request logger
 app.use((req, res, next) => {
   console.log(`[REQ] ${req.method} ${req.url}`);
   next();
