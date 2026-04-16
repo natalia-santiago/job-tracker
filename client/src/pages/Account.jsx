@@ -34,7 +34,7 @@ export default function Account() {
   }, [user]);
 
   const joinedDate = useMemo(() => {
-    if (!user?.createdAt) return "—";
+    if (!user?.createdAt) return null;
     return new Date(user.createdAt).toLocaleDateString();
   }, [user]);
 
@@ -134,7 +134,7 @@ export default function Account() {
         </div>
       </section>
 
-      <main className="dashboardGrid accountLayout">
+      <main className="dashboardDesktopGrid">
         <section className="card accountMainCard">
           <div className="cardHeader">
             <h2 className="cardTitle">Account Information</h2>
@@ -150,7 +150,7 @@ export default function Account() {
             <div className="accountInfoList">
               <InfoRow label="Name" value={user?.name || "—"} />
               <InfoRow label="Email" value={user?.email || "—"} />
-              <InfoRow label="Joined" value={joinedDate} />
+              {joinedDate && <InfoRow label="Joined" value={joinedDate} />}
 
               <div className="accountActions">
                 <button
@@ -170,31 +170,24 @@ export default function Account() {
 
         <aside className="card accountTipsCard">
           <div className="cardHeader">
-            <h2 className="cardTitle">Session Notes</h2>
-            <span className="cardHint">What this page represents</span>
+            <h2 className="cardTitle">Account Summary</h2>
+            <span className="cardHint">At a glance</span>
           </div>
 
           <div className="accountTipsList">
             <div className="accountTip">
-              <div className="accountTipTitle">Authenticated user</div>
-              <div className="accountTipBody">
-                This page reflects the user currently loaded from your protected session.
-              </div>
+              <div className="accountTipTitle">Signed in as</div>
+              <div className="accountTipBody">{user?.email || "—"}</div>
             </div>
 
             <div className="accountTip">
-              <div className="accountTipTitle">Persistent login</div>
-              <div className="accountTipBody">
-                Your token and profile are stored locally so the app can restore access.
-              </div>
+              <div className="accountTipTitle">Profile name</div>
+              <div className="accountTipBody">{user?.name || "—"}</div>
             </div>
 
             <div className="accountTip">
-              <div className="accountTipTitle">Portfolio value</div>
-              <div className="accountTipBody">
-                This helps show authenticated routing, protected data fetching, and clean
-                account-state UX.
-              </div>
+              <div className="accountTipTitle">Session status</div>
+              <div className="accountTipBody">Authenticated and active.</div>
             </div>
           </div>
         </aside>

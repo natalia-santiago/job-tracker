@@ -209,7 +209,7 @@ export default function AddJob() {
         </div>
       </section>
 
-      <main className="dashboardGrid addJobLayout">
+      <main className="dashboardDesktopGrid">
         <section className="card addJobMainCard">
           <div className="cardHeader dashboardCardHeader">
             <div className="dashboardCardHeaderMain">
@@ -285,7 +285,7 @@ export default function AddJob() {
               <textarea
                 id="notes"
                 className="input textarea addJobTextarea"
-                rows={6}
+                rows={5}
                 value={form.notes}
                 onChange={(e) => handleChange("notes", e.target.value)}
                 placeholder="Interview dates, recruiter contact, links, reminders, application details..."
