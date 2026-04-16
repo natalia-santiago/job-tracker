@@ -122,8 +122,9 @@ export default function AddJob() {
 
     try {
       await api.post("/jobs", payload);
-      showToast("success", "Job added");
-      navigate("/dashboard");
+      showToast("success", "Job added successfully");
+      showToast("success", "Job added successfully");
+      setTimeout(() => navigate("/dashboard"), 600);
     } catch (err) {
       handleApiError(err, "Failed to add job");
     } finally {
@@ -193,8 +194,7 @@ export default function AddJob() {
             <div className="dashboardEyebrow">New application</div>
             <h2 className="dashboardHeading">Add a job to your pipeline</h2>
             <p className="dashboardSubtext">
-              Save the company, role, status, and notes so every opportunity stays
-              organized in one place from the start.
+              Add a new opportunity and keep your search organized from the start.
             </p>
           </div>
 
@@ -214,7 +214,7 @@ export default function AddJob() {
           <div className="cardHeader dashboardCardHeader">
             <div className="dashboardCardHeaderMain">
               <h2 className="cardTitle">Application details</h2>
-              <span className="cardHint">Create a clean and searchable job entry</span>
+              <span className="cardHint">Keep your job search clear and easy to manage</span>
             </div>
 
             <button
@@ -288,7 +288,7 @@ export default function AddJob() {
                 rows={5}
                 value={form.notes}
                 onChange={(e) => handleChange("notes", e.target.value)}
-                placeholder="Add interview dates, recruiter contact details, links, reminders, or application notes"
+                placeholder="Add interview dates, contacts, links, or reminders to stay on track"
                 disabled={saving}
               />
             </div>
@@ -304,7 +304,7 @@ export default function AddJob() {
               </button>
 
               <button type="submit" className="btn btnPrimary" disabled={saving}>
-                {saving ? "Saving..." : "Save Job"}
+                {saving ? "Saving..." : "Add Job"}
               </button>
             </div>
           </form>
@@ -320,23 +320,21 @@ export default function AddJob() {
             <div className="addJobTip">
               <div className="addJobTipTitle">Company and role</div>
               <div className="addJobTipBody">
-                Use the exact employer name and position title so search and sorting stay
-                clean later.
+                Use the exact company and role so your search stays consistent later.
               </div>
             </div>
 
             <div className="addJobTip">
               <div className="addJobTipTitle">Status updates</div>
               <div className="addJobTipBody">
-                Start with the current stage and update it as the process moves forward.
+                Set the current stage now and update it as things progress.
               </div>
             </div>
 
             <div className="addJobTip">
               <div className="addJobTipTitle">Useful notes</div>
               <div className="addJobTipBody">
-                Add recruiter names, deadlines, interview dates, links, or follow-up
-                reminders so nothing gets lost.
+                Add key details like contacts, dates, and reminders so nothing gets lost.
               </div>
             </div>
           </div>

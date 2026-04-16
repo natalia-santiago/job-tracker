@@ -116,7 +116,7 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  const updateJob = async (id, patch, successMsg = "Updated") => {
+  const updateJob = async (id, patch, successMsg = "Changes saved") => {
     setError("");
     setBusyId(id);
 
@@ -134,7 +134,9 @@ export default function Dashboard() {
 
   const deleteJob = async (id) => {
     setError("");
-    const ok = window.confirm("Delete this job? This cannot be undone.");
+    const ok = window.confirm(
+      "Are you sure you want to delete this job? This action cannot be undone."
+    );
     if (!ok) return;
 
     setBusyId(id);
@@ -142,7 +144,7 @@ export default function Dashboard() {
     try {
       await api.delete(`/jobs/${id}`);
       setJobs((prev) => prev.filter((j) => j._id !== id));
-      showToast("success", "Job deleted");
+      showToast("success", "Job removed");
     } catch (err) {
       handleApiError(err, "Failed to delete job");
     } finally {
@@ -179,7 +181,7 @@ export default function Dashboard() {
       return;
     }
 
-    await updateJob(id, payload, "Job saved");
+    await updateJob(id, payload, "Job updated successfully");
     cancelEdit();
   };
 
@@ -191,7 +193,7 @@ export default function Dashboard() {
       const base = api.defaults.baseURL || "";
       const url = `${base}/jobs/export.csv`;
       window.open(url, "_blank", "noopener,noreferrer");
-      showToast("success", "Export started");
+      showToast("success", "Your export is downloading");
     } catch (err) {
       handleApiError(err, "Failed to export CSV");
     } finally {
@@ -247,16 +249,21 @@ export default function Dashboard() {
   }, [jobs]);
 
   const greeting = useMemo(() => {
-    if (!user?.name) return "Welcome back";
+    if (!user?.name) return "Welcome back.";
     const firstName = user.name.trim().split(/\s+/)[0];
     return `Welcome back, ${firstName}`;
   }, [user]);
 
   const statusSummary = useMemo(() => {
     if (!jobs.length) return "Start by adding your first job application.";
-    if (stats.counts.offer > 0) return "You already have offers in progress. Keep the momentum going.";
-    if (stats.counts.interview > 0) return "You have interviews in motion. Stay organized and follow up.";
-    return "Keep building your pipeline and tracking each opportunity.";
+
+    if (stats.counts.offer > 0)
+      return "You have offers in progress. Keep moving forward and compare them carefully.";
+
+    if (stats.counts.interview > 0)
+      return "You have interviews coming up. Stay organized and keep your follow-ups consistent.";
+
+    return "Keep building your pipeline and adding new opportunities.";
   }, [jobs, stats]);
 
   if (!token) return null;
@@ -320,7 +327,7 @@ export default function Dashboard() {
                 className="btn btnPrimary"
                 onClick={() => navigate("/add-job")}
               >
-                + Add Job
+                Add Job
               </button>
 
               <button
@@ -360,7 +367,7 @@ export default function Dashboard() {
           <div className="controlsRow controlsRowTight">
             <input
               className="input"
-              placeholder="Search company, position, notes…"
+              placeholder="Search by company, role, or notes"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -418,9 +425,9 @@ export default function Dashboard() {
             <div className="empty applicationsEmpty">
               <div className="emptyIcon">+</div>
               <div>
-                <div className="emptyTitle">No matches found</div>
+                <div className="emptyTitle">No results found</div>
                 <div className="emptyBody">
-                  Try clearing your filters or add a new job to continue building your tracker.
+                  Try adjusting your filters or add a new job to keep your pipeline growing.
                 </div>
 
                 <div className="emptyAction">
@@ -447,7 +454,7 @@ export default function Dashboard() {
                     onClick={() => {
                       if (!isEditing && !isBusy) {
                         startEdit(job);
-                        showToast("success", "Editing job");
+                        showToast("success", "You can now edit this job");
                       }
                     }}
                     title={isEditing ? "Editing job" : "Click to edit"}
@@ -686,13 +693,13 @@ export default function Dashboard() {
                     onClick={() => {
                       startEdit(j);
                       window.scrollTo({ top: 0, behavior: "smooth" });
-                      showToast("success", "Editing job");
+                      showToast("success", "You can now edit this job");
                     }}
                     title="Click to edit"
                   >
                     <div className="recentMain">
                       <div className="recentTitle">
-                        {j.company} · {j.position}
+                        {j.company} — {j.position}
                       </div>
                       <div className="recentSub">
                         {j.updatedAt

@@ -176,6 +176,8 @@ body{
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 16px;
+
+  backdrop-filter: blur(4px);
 }
 
 .cardHeader{
@@ -1263,6 +1265,78 @@ body{
   border-radius: 999px;
   background: rgba(11,31,59,0.35);
 }
+
+/* ---------- UX Polish: Dashboard Density ---------- */
+
+.jobCard{
+  padding: 11px 12px;
+}
+
+.jobNotes{
+  margin-top: 6px;
+}
+
+.jobMeta{
+  margin-top: 8px;
+}
+
+.recentItem{
+  padding: 10px 11px;
+}
+
+.quickMetric{
+  padding: 12px;
+}
+
+.statTile{
+  padding: 10px;
+}
+
+/* ---------- UX Polish: Textarea ---------- */
+
+.jobNotesInput textarea{
+  min-height: 90px;
+  max-height: 140px;
+}
+
+/* ---------- UX Polish: Hover ---------- */
+
+.jobCard:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(10,16,32,0.10);
+}
+
+.btnPrimary:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(215,38,56,0.22);
+}
+
+/* ---------- UX Polish: Hero ---------- */
+
+.dashboardHero{
+  padding: 26px 28px;
+}
+
+.dashboardSubtext{
+  margin-top: 14px;
+}
+
+/* ---------- UX Polish: Layout Balance ---------- */
+
+.dashboardDesktopGrid{
+  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
+}
+
+/* ---------- UX Polish: Scroll ---------- */
+
+.applicationsScroller{
+  scroll-behavior: smooth;
+}
+
+.jobsList{
+  scroll-behavior: smooth;
+}
+
 
 /* -------------------- Responsive -------------------- */
 @media (max-width: 1100px){
