@@ -1569,9 +1569,124 @@ select.input,
   opacity: 0.96;
 }
 
-/* -------------------- Final Responsive Polish -------------------- */
+/* -------------------- Responsive -------------------- */
+@media (min-width: 680px){
+  .form{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 740px){
+  .controlsRow{
+    grid-template-columns: minmax(240px, 1.8fr) minmax(140px, 0.95fr) minmax(140px, 0.95fr) auto;
+    align-items: center;
+  }
+}
+
+@media (min-width: 980px){
+  .grid{
+    grid-template-columns: 1fr 1.35fr;
+  }
+}
+
+@media (min-width: 1101px){
+  .dashboardDesktopGrid .accountMainCard{
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 1100px){
+  .dashboardDesktopGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardSideColumn{
+    grid-template-columns: 1fr 1fr;
+    position: static;
+  }
+
+  .addJobMainCard,
+  .accountMainCard{
+    grid-column: auto;
+  }
+
+  .accountHeroSide{
+    justify-content: start;
+  }
+}
+
+@media (max-width: 980px){
+  .dashboardHeroGrid,
+  .addJobHeroGrid,
+  .accountHeroGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .quickMetrics{
+    max-width: 520px;
+  }
+
+  .addJobTipsCard{
+    max-width: none;
+  }
+
+  .authPage{
+    grid-template-columns: 1fr;
+  }
+
+  .authRight{
+    order: -1;
+    min-height: 280px;
+    padding: 34px 24px;
+  }
+
+  .authBrand{
+    max-width: 100%;
+    transform: none;
+  }
+
+  .authBrand p{
+    max-width: 40ch;
+  }
+
+  .authLeft{
+    padding-top: 24px;
+    padding-bottom: 34px;
+  }
+}
 
 @media (max-width: 760px){
+  .dashboardSideColumn{
+    grid-template-columns: 1fr;
+    position: static;
+  }
+
+  .applicationsScroller{
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .jobsList{
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .cardHeader{
+    align-items: flex-start;
+  }
+
+  .cardHint{
+    white-space: normal;
+    text-align: right;
+  }
+
+  .jobCard,
+  .compactJobCard{
+    border-color: rgba(11,31,59,0.08);
+  }
+
   .jobPosition{
     font-size: 12.5px;
   }
@@ -1588,7 +1703,14 @@ select.input,
 }
 
 @media (max-width: 680px){
+  .page{
+    padding: 16px 14px 26px;
+  }
+
   .topbar{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px;
     gap: 14px;
   }
 
@@ -1605,20 +1727,88 @@ select.input,
     line-height: 1.5;
   }
 
+  .topbarRight{
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .accountPill{
+    max-width: 100%;
+  }
+
+  .accountSecondary{
+    max-width: 100%;
+  }
+
+  .authLeft{
+    padding: 18px 14px 28px;
+  }
+
+  .authRight{
+    min-height: 220px;
+    padding: 24px 18px;
+  }
+
+  .authCard{
+    padding: 22px 18px;
+    border-radius: 22px;
+  }
+
+  .authHeader h2{
+    font-size: 1.9rem;
+    line-height: 1.08;
+  }
+
+  .authBrand h1{
+    font-size: 2.3rem;
+    line-height: 1.02;
+  }
+
+  .authBrand p{
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
   .dashboardHero,
   .addJobHero,
   .accountHero,
   .card{
     padding: 18px 16px;
+    border-radius: 22px;
+  }
+
+  .dashboardHero,
+  .addJobHero,
+  .accountHero{
+    margin-bottom: 6px;
   }
 
   .dashboardHeading{
+    font-size: clamp(1.7rem, 7vw, 2.05rem);
+    line-height: 1.06;
     letter-spacing: -0.045em;
   }
 
   .dashboardSubtext{
     margin-top: 10px;
     font-size: 0.97rem;
+    line-height: 1.62;
+  }
+
+  .accountHeroEmail,
+  .addJobTipBody,
+  .accountTipBody,
+  .insightBody,
+  .emptyBody,
+  .alertBody{
+    line-height: 1.62;
+  }
+
+  .statsGrid,
+  .quickMetrics{
+    grid-template-columns: 1fr;
   }
 
   .quickMetric{
@@ -1629,18 +1819,77 @@ select.input,
     font-size: 21px;
   }
 
+  .addJobForm{
+    grid-template-columns: 1fr;
+  }
+
+  .addJobActions{
+    justify-content: stretch;
+    flex-direction: column-reverse;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .addJobActions .btn,
+  .accountActions .btn{
+    width: 100%;
+  }
+
+  .infoRow{
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .accountActions{
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
   .jobCard,
   .compactJobCard{
     padding: 9px 10px;
+    border-color: rgba(11,31,59,0.075);
+  }
+
+  .jobTop,
+  .jobMeta,
+  .recentItem,
+  .empty{
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .jobMeta{
     margin-top: 7px;
   }
 
-  .addJobActions,
-  .accountActions{
-    gap: 10px;
+  .jobStatusControl{
+    width: 100%;
+    justify-items: start;
+  }
+
+  .statusSelect{
+    width: 100%;
+  }
+
+  .recentTitle,
+  .accountHeroEmail,
+  .accountSecondary,
+  .infoRowValue{
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .input{
+    height: 44px;
+    padding: 13px 14px;
+  }
+
+  .textarea{
+    min-height: 110px;
+    padding: 13px 14px;
   }
 
   .btn,
@@ -1651,13 +1900,60 @@ select.input,
   }
 
   .footer{
-    margin-top: 12px;
+    flex-wrap: wrap;
     gap: 7px;
+    font-size: 0.92rem;
+    margin-top: 12px;
     line-height: 1.5;
   }
 }
 
 @media (max-width: 520px){
+  .page{
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .btn,
+  .btnPrimary,
+  .btnGhost,
+  .btnDanger{
+    width: auto;
+  }
+
+  .dashboardHeroActions{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .dashboardHeroActions .btn{
+    width: 100%;
+  }
+
+  .cardHeader{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .cardHint{
+    text-align: left;
+  }
+
+  .topbarRight{
+    gap: 8px;
+  }
+
+  .dashboardHero,
+  .addJobHero,
+  .accountHero,
+  .card,
+  .authCard{
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
   .authRight{
     min-height: 240px;
     padding: 22px 16px;
@@ -1688,7 +1984,8 @@ select.input,
     margin-bottom: 18px;
   }
 
-  .authHeader h2{
+  .authHeader h2,
+  .dashboardHeading{
     font-size: 1.72rem;
     line-height: 1.06;
   }
@@ -1762,7 +2059,7 @@ select.input,
   }
 
   .authRight{
-    min-height: 210px;
+    min-height: 180px;
     padding: 18px 14px;
   }
 
@@ -1823,403 +2120,5 @@ select.input,
 
   .footer{
     font-size: 0.86rem;
-  }
-}
-
-/* -------------------- Responsive -------------------- */
-@media (min-width: 680px){
-  .form{
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (min-width: 740px){
-  .controlsRow{
-    grid-template-columns: minmax(240px, 1.8fr) minmax(140px, 0.95fr) minmax(140px, 0.95fr) auto;
-    align-items: center;
-  }
-}
-
-@media (min-width: 980px){
-  .grid{
-    grid-template-columns: 1fr 1.35fr;
-  }
-}
-
-@media (min-width: 1101px){
-  .dashboardDesktopGrid .accountMainCard{
-    grid-column: auto;
-  }
-}
-
-@media (max-width: 1100px){
-  .dashboardDesktopGrid{
-    grid-template-columns: 1fr;
-  }
-
-  .dashboardSideColumn{
-    grid-template-columns: 1fr 1fr;
-    position: static;
-  }
-
-  .addJobMainCard,
-  .accountMainCard{
-    grid-column: auto;
-  }
-
-  .accountHeroSide{
-    justify-content: start;
-  }
-}
-
-@media (max-width: 980px){
-  .dashboardHeroGrid,
-  .addJobHeroGrid,
-  .accountHeroGrid{
-    grid-template-columns: 1fr;
-  }
-
-  .quickMetrics{
-    max-width: 520px;
-  }
-
-  .addJobTipsCard{
-    max-width: none;
-  }
-
-  .authPage{
-    grid-template-columns: 1fr;
-  }
-
-  .authRight{
-    order: -1;
-    min-height: 300px;
-    padding: 36px 24px;
-  }
-
-  .authBrand{
-    max-width: 100%;
-    transform: none;
-  }
-
-  .authBrand p{
-    max-width: 40ch;
-  }
-
-  .authLeft{
-    padding-top: 24px;
-    padding-bottom: 36px;
-  }
-}
-
-@media (max-width: 760px){
-  .dashboardSideColumn{
-    grid-template-columns: 1fr;
-    position: static;
-  }
-
-  .applicationsScroller{
-    max-height: none;
-    overflow: visible;
-    padding-right: 0;
-  }
-
-  .jobsList{
-    max-height: none;
-    overflow: visible;
-    padding-right: 0;
-  }
-
-  .cardHeader{
-    align-items: flex-start;
-  }
-
-  .cardHint{
-    white-space: normal;
-    text-align: right;
-  }
-}
-
-@media (max-width: 680px){
-  .page{
-    padding: 16px 14px 26px;
-  }
-
-  .topbar{
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 14px;
-    gap: 12px;
-  }
-
-  .topbarRight{
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .accountPill{
-    max-width: 100%;
-  }
-
-  .accountSecondary{
-    max-width: 100%;
-  }
-
-  .authLeft{
-    padding: 18px 14px 28px;
-  }
-
-  .authRight{
-    min-height: 220px;
-    padding: 24px 18px;
-  }
-
-  .authCard{
-    padding: 22px 18px;
-    border-radius: 22px;
-  }
-
-  .authHeader h2{
-    font-size: 1.9rem;
-    line-height: 1.08;
-  }
-
-  .authBrand h1{
-    font-size: 2.3rem;
-    line-height: 1.02;
-  }
-
-  .authBrand p{
-    font-size: 1rem;
-    line-height: 1.68;
-  }
-
-  .dashboardHero,
-  .addJobHero,
-  .accountHero,
-  .card{
-    padding: 18px 16px;
-    border-radius: 22px;
-  }
-
-  .dashboardHeading{
-    font-size: clamp(1.7rem, 7vw, 2.05rem);
-    line-height: 1.06;
-  }
-
-  .dashboardSubtext,
-  .accountHeroEmail,
-  .addJobTipBody,
-  .accountTipBody,
-  .insightBody,
-  .emptyBody,
-  .alertBody{
-    line-height: 1.62;
-  }
-
-  .statsGrid,
-  .quickMetrics{
-    grid-template-columns: 1fr;
-  }
-
-  .addJobForm{
-    grid-template-columns: 1fr;
-  }
-
-  .addJobActions{
-    justify-content: stretch;
-    flex-direction: column-reverse;
-    gap: 10px;
-  }
-
-  .addJobActions .btn,
-  .accountActions .btn{
-    width: 100%;
-  }
-
-  .infoRow{
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .accountActions{
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .jobCard,
-  .compactJobCard{
-    padding: 9px 11px;
-  }
-
-  .jobTop,
-  .jobMeta,
-  .recentItem,
-  .empty{
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .jobStatusControl{
-    width: 100%;
-    justify-items: start;
-  }
-
-  .statusSelect{
-    width: 100%;
-  }
-
-  .recentTitle,
-  .accountHeroEmail,
-  .accountSecondary,
-  .infoRowValue{
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  .input{
-    height: 44px;
-    padding: 13px 14px;
-  }
-
-  .textarea{
-    min-height: 110px;
-    padding: 13px 14px;
-  }
-
-  .btn,
-  .btnPrimary,
-  .btnGhost,
-  .btnDanger{
-    min-height: 46px;
-  }
-
-  .footer{
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.92rem;
-  }
-}
-
-@media (max-width: 520px){
-  .page{
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .btn,
-  .btnPrimary,
-  .btnGhost,
-  .btnDanger{
-    width: auto;
-  }
-
-  .dashboardHeroActions{
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .dashboardHeroActions .btn{
-    width: 100%;
-  }
-
-  .cardHeader{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .cardHint{
-    text-align: left;
-  }
-
-  .topbarRight{
-    gap: 8px;
-  }
-
-  .dashboardHero,
-  .addJobHero,
-  .accountHero,
-  .card,
-  .authCard{
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-
-  .authBrand h1{
-    font-size: 2.1rem;
-  }
-
-  .authHeader h2,
-  .dashboardHeading{
-    font-size: 1.78rem;
-  }
-
-  .quickMetric,
-  .statTile,
-  .recentItem,
-  .addJobTip,
-  .accountTip,
-  .infoRow{
-    padding: 12px;
-  }
-}
-
-@media (max-width: 420px){
-  .page{
-    padding: 12px 10px 22px;
-  }
-
-  .dashboardHero,
-  .addJobHero,
-  .accountHero,
-  .card,
-  .authCard{
-    padding: 14px 12px;
-    border-radius: 18px;
-  }
-
-  .authRight{
-    padding: 20px 16px;
-    min-height: 200px;
-  }
-
-  .authBrand h1{
-    font-size: 1.95rem;
-  }
-
-  .authHeader h2,
-  .dashboardHeading{
-    font-size: 1.6rem;
-  }
-
-  .btn,
-  .btnPrimary,
-  .btnGhost,
-  .btnDanger{
-    min-height: 44px;
-  }
-
-  .jobCard,
-  .compactJobCard{
-    padding: 8px 10px;
-  }
-
-  .input{
-    height: 42px;
-    padding: 12px 13px;
-  }
-
-  .textarea{
-    min-height: 104px;
-    padding: 12px 13px;
-  }
-
-  .footer{
-    font-size: 0.88rem;
   }
 }
