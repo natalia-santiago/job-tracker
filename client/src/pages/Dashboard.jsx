@@ -261,7 +261,7 @@ export default function Dashboard() {
       return "You have offers in progress. Keep moving forward and compare them carefully.";
 
     if (stats.counts.interview > 0)
-      return "You have interviews coming up. Stay organized and keep your follow-ups consistent.";
+      return "You have interviews coming up. Stay organized and follow up consistently.";
 
     return "Keep building your pipeline and adding new opportunities.";
   }, [jobs, stats]);

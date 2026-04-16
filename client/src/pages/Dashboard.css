@@ -170,6 +170,55 @@ body{
   top: 20px;
 }
 
+/* Make sidebar feel secondary */
+.dashboardSidebar .card {
+  opacity: 0.92;
+}
+
+/* Reduce shadow slightly */
+.dashboardSidebar .card {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* Slightly reduce title weight */
+.dashboardSidebar .cardTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.filtersRow {
+  margin-top: 12px;
+  margin-bottom: 20px;
+}
+
+.btnClear {
+  opacity: 0.8;
+}
+
+.btnClear:hover {
+  opacity: 1;
+}
+
+.whatToInclude {
+  margin-top: 28px;
+}
+
+.accountHeroCard {
+  max-width: 320px;
+}
+
+.btnSmall {
+  font-size: 0.85rem;
+}
+
+.btnGhost {
+  opacity: 0.85;
+}
+
+.btnGhost:hover {
+  opacity: 1;
+}
+
 .card{
   background: var(--card);
   border: 1px solid var(--border);
