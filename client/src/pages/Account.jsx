@@ -117,8 +117,7 @@ export default function Account() {
             <div className="dashboardEyebrow">Profile</div>
             <h2 className="dashboardHeading">Manage your account details</h2>
             <p className="dashboardSubtext">
-              View the information connected to your account and return to your job
-              tracker workspace whenever you are ready.
+              View your account details and return to your job tracker anytime.
             </p>
           </div>
 
@@ -126,8 +125,8 @@ export default function Account() {
             <div className="accountHeroCard">
               <div className="accountHeroAvatar">{initials}</div>
               <div className="accountHeroText">
-                <div className="accountHeroName">{user?.name || "Not set"}</div>
-                <div className="accountHeroEmail">{user?.email || "Not set"}</div>
+                <div className="accountHeroName">{user?.name || "Not available"}</div>
+                <div className="accountHeroEmail">{user?.email || "Not available"}</div>
               </div>
             </div>
           </div>
@@ -137,19 +136,19 @@ export default function Account() {
       <main className="dashboardDesktopGrid">
         <section className="card accountMainCard">
           <div className="cardHeader">
-            <h2 className="cardTitle">Account Information</h2>
-            <span className="cardHint">Loaded from your authenticated session</span>
+            <h2 className="cardTitle">Account Details</h2>
+            <span className="cardHint">Your account information</span>
           </div>
 
           {loading ? (
             <div className="empty">
               <div className="spinner" />
-              <span>Loading account details…</span>
+              <span>Loading your account...</span>
             </div>
           ) : (
             <div className="accountInfoList">
-              <InfoRow label="Name" value={user?.name || "Not set"} />
-              <InfoRow label="Email" value={user?.email || "Not set"} />
+              <InfoRow label="Name" value={user?.name || "Not available"} />
+              <InfoRow label="Email" value={user?.email || "Not available"} />
 
               {joinedDate && <InfoRow label="Joined" value={joinedDate} />}
 
@@ -159,7 +158,7 @@ export default function Account() {
                   className="btn btnPrimary"
                   onClick={() => navigate("/dashboard")}
                 >
-                  Back to Dashboard
+                  Go to Dashboard
                 </button>
                 <button type="button" className="btn btnGhost" onClick={logout}>
                   Logout
@@ -178,17 +177,17 @@ export default function Account() {
           <div className="accountTipsList">
             <div className="accountTip">
               <div className="accountTipTitle">Signed in as</div>
-              <div className="accountTipBody">{user?.email || "Not set"}</div>
+              <div className="accountTipBody">{user?.email || "Not available"}</div>
             </div>
 
             <div className="accountTip">
               <div className="accountTipTitle">Profile name</div>
-              <div className="accountTipBody">{user?.name || "Not set"}</div>
+              <div className="accountTipBody">{user?.name || "Not available"}</div>
             </div>
 
             <div className="accountTip">
               <div className="accountTipTitle">Session status</div>
-              <div className="accountTipBody">Authenticated and active.</div>
+              <div className="accountTipBody">You are currently signed in.</div>
             </div>
           </div>
         </aside>
