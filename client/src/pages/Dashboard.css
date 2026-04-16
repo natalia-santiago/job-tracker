@@ -17,7 +17,7 @@
   --radius-sm: 12px;
 }
 
-* {
+*{
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -86,7 +86,11 @@ body{
   font-size: 13px;
 }
 
-/* -------- Account header -------- */
+.brandButton{
+  cursor: pointer;
+}
+
+/* -------------------- Header Account -------------------- */
 .topbarRight{
   display:flex;
   align-items:center;
@@ -103,8 +107,13 @@ body{
   background: rgba(11,31,59,0.04);
 }
 
-.accountPill:hover{ background: rgba(11,31,59,0.06); }
-.accountPill:active{ transform: translateY(1px); }
+.accountPill:hover{
+  background: rgba(11,31,59,0.06);
+}
+
+.accountPill:active{
+  transform: translateY(1px);
+}
 
 .accountAvatar{
   width: 32px;
@@ -143,10 +152,6 @@ body{
   gap: 16px;
 }
 
-@media (min-width: 980px){
-  .grid{ grid-template-columns: 1fr 1.4fr; }
-}
-
 .dashboardGrid{
   margin-top: 18px;
   display:grid;
@@ -156,83 +161,34 @@ body{
 
 .dashboardDesktopGrid{
   margin-top: 18px;
-  display: grid;
+  display:grid;
   gap: 18px;
-  grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.95fr);
+  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
   align-items: start;
 }
 
 .dashboardSideColumn{
-  display: grid;
+  display:grid;
   gap: 16px;
   align-self: start;
   position: sticky;
   top: 20px;
 }
 
-/* Make sidebar feel secondary */
-.dashboardSidebar .card {
-  opacity: 0.92;
-}
-
-/* Reduce shadow slightly */
-.dashboardSidebar .card {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
-
-/* Slightly reduce title weight */
-.dashboardSidebar .cardTitle {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.filtersRow {
-  margin-top: 12px;
-  margin-bottom: 20px;
-}
-
-.btnClear {
-  opacity: 0.8;
-}
-
-.btnClear:hover {
-  opacity: 1;
-}
-
-.whatToInclude {
-  margin-top: 28px;
-}
-
-.accountHeroCard {
-  max-width: 320px;
-}
-
-.btnSmall {
-  font-size: 0.85rem;
-}
-
-.btnGhost {
-  opacity: 0.85;
-}
-
-.btnGhost:hover {
-  opacity: 1;
-}
-
+/* -------------------- Cards -------------------- */
 .card{
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 16px;
-
   backdrop-filter: blur(4px);
 }
 
 .cardHeader{
   display:flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items:baseline;
+  justify-content:space-between;
   gap: 12px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
@@ -343,7 +299,6 @@ body{
   margin-top: 12px;
 }
 
-/* Spinner */
 .spinner{
   width: 18px;
   height: 18px;
@@ -354,7 +309,9 @@ body{
 }
 
 @keyframes spin{
-  to { transform: rotate(360deg); }
+  to{
+    transform: rotate(360deg);
+  }
 }
 
 /* -------------------- Forms / Inputs -------------------- */
@@ -364,15 +321,14 @@ body{
   gap: 12px;
 }
 
-@media (min-width: 680px){
-  .form{ grid-template-columns: 1fr 1fr; }
-  .fieldFull{ grid-column: 1 / -1; }
-}
-
 .field{
   display:flex;
   flex-direction:column;
   gap: 6px;
+}
+
+.fieldFull{
+  grid-column: 1 / -1;
 }
 
 .label{
@@ -423,13 +379,6 @@ body{
   margin-bottom: 16px;
 }
 
-@media (min-width: 740px){
-  .controlsRow{
-    grid-template-columns: 1.55fr 0.9fr 0.95fr auto;
-    align-items:center;
-  }
-}
-
 /* -------------------- Buttons -------------------- */
 .btn{
   border: 1px solid transparent;
@@ -458,7 +407,11 @@ body{
   font-weight: 600;
 }
 
-.btnPrimary:hover{ background: var(--red-2); }
+.btnPrimary:hover{
+  background: var(--red-2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(215,38,56,0.22);
+}
 
 .btnGhost{
   background: transparent;
@@ -485,7 +438,7 @@ body{
 /* -------------------- Auth Layout -------------------- */
 .authPage{
   min-height: 100vh;
-  display: grid;
+  display:grid;
   grid-template-columns: minmax(0, 1fr) minmax(420px, 0.95fr);
   background:
     radial-gradient(circle at top left, rgba(215,38,56,0.10), transparent 30%),
@@ -494,9 +447,9 @@ body{
 }
 
 .authLeft{
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   padding: 48px 28px;
 }
 
@@ -601,9 +554,9 @@ body{
 .authRight{
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   padding: 40px 48px 48px;
   background:
     linear-gradient(160deg, rgba(11,31,59,0.98) 0%, rgba(15,42,82,0.96) 52%, rgba(32,56,98,0.94) 100%);
@@ -657,12 +610,12 @@ body{
 /* -------------------- Dashboard Hero -------------------- */
 .dashboardHero{
   margin-top: 18px;
-  padding: 22px 24px;
+  padding: 26px 28px 28px;
   background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.96));
 }
 
 .dashboardHeroGrid{
-  display: grid;
+  display:grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.95fr);
   gap: 18px;
   align-items: center;
@@ -691,7 +644,7 @@ body{
 }
 
 .dashboardSubtext{
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.65;
@@ -699,14 +652,14 @@ body{
 }
 
 .dashboardHeroActions{
-  display: flex;
+  display:flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 18px;
 }
 
 .quickMetrics{
-  display: grid;
+  display:grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
@@ -714,7 +667,7 @@ body{
 .quickMetric{
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 14px;
+  padding: 12px;
   background: #fff;
   box-shadow: var(--shadow-2);
 }
@@ -733,7 +686,7 @@ body{
   letter-spacing: -0.03em;
 }
 
-/* -------------------- Dashboard Pills / Insight -------------------- */
+/* -------------------- Pills / Insight -------------------- */
 .sectionPill{
   display: inline-flex;
   align-items: center;
@@ -769,11 +722,6 @@ body{
   line-height: 1.6;
 }
 
-/* -------------------- Shared Brand Helpers -------------------- */
-.brandButton{
-  cursor: pointer;
-}
-
 /* -------------------- Add Job -------------------- */
 .addJobHero{
   margin-top: 18px;
@@ -782,14 +730,14 @@ body{
 }
 
 .addJobHeroGrid{
-  display: grid;
+  display:grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
   gap: 18px;
   align-items: center;
 }
 
 .addJobHeroSide{
-  display: grid;
+  display:grid;
 }
 
 .addJobMetricValue{
@@ -805,7 +753,7 @@ body{
 }
 
 .addJobForm{
-  display: grid;
+  display:grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
@@ -815,8 +763,8 @@ body{
 }
 
 .addJobActions{
-  display: flex;
-  justify-content: flex-end;
+  display:flex;
+  justify-content:flex-end;
   gap: 12px;
   margin-top: 4px;
 }
@@ -826,7 +774,7 @@ body{
 }
 
 .addJobTipsList{
-  display: grid;
+  display:grid;
   gap: 12px;
 }
 
@@ -858,25 +806,26 @@ body{
 }
 
 .accountHeroGrid{
-  display: grid;
+  display:grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.8fr);
   gap: 18px;
   align-items: center;
 }
 
 .accountHeroSide{
-  display: grid;
+  display:grid;
 }
 
 .accountHeroCard{
-  display: flex;
-  align-items: center;
+  display:flex;
+  align-items:center;
   gap: 14px;
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: #fff;
   box-shadow: var(--shadow-2);
+  max-width: 320px;
 }
 
 .accountHeroAvatar{
@@ -886,9 +835,9 @@ body{
   background: var(--navy);
   color: white;
   font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-size: 1rem;
   flex-shrink: 0;
 }
@@ -917,15 +866,16 @@ body{
 
 .accountMainCard{
   grid-column: span 2;
+  min-width: 0;
 }
 
 .accountInfoList{
-  display: grid;
+  display:grid;
   gap: 10px;
 }
 
 .infoRow{
-  display: grid;
+  display:grid;
   grid-template-columns: 132px 1fr;
   gap: 10px;
   align-items: center;
@@ -933,6 +883,7 @@ body{
   border-radius: 12px;
   border: 1px solid var(--border);
   background: rgba(11,31,59,0.02);
+  min-height: 52px;
 }
 
 .infoRowLabel{
@@ -948,17 +899,18 @@ body{
 
 .accountActions{
   margin-top: 4px;
-  display: flex;
+  display:flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
 .accountTipsCard{
   height: fit-content;
+  align-self: start;
 }
 
 .accountTipsList{
-  display: grid;
+  display:grid;
   gap: 12px;
 }
 
@@ -983,34 +935,12 @@ body{
   word-break: break-word;
 }
 
-/* -------------------- Account Desktop Polish -------------------- */
-.accountMainCard{
-  min-width: 0;
-}
-
-.accountTipsCard{
-  align-self: start;
-}
-
-.accountInfoList{
-  gap: 10px;
-}
-
-.infoRow{
-  min-height: 52px;
-}
-
-@media (min-width: 1101px){
-  .dashboardDesktopGrid .accountMainCard{
-    grid-column: auto;
-  }
-}
-
 /* -------------------- Jobs -------------------- */
 .jobsList{
   max-height: 70vh;
   overflow-y: auto;
   padding-right: 6px;
+  scroll-behavior: smooth;
 }
 
 .jobsList::-webkit-scrollbar{
@@ -1036,6 +966,7 @@ body{
   max-height: 980px;
   overflow-y: auto;
   padding-right: 6px;
+  scroll-behavior: smooth;
 }
 
 .applicationsScroller::-webkit-scrollbar{
@@ -1050,15 +981,15 @@ body{
 .jobCard{
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px;
+  padding: 11px 12px;
   background: #fff;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
   cursor: pointer;
 }
 
 .jobCard:hover{
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(10,16,32,0.10);
   background: rgba(11,31,59,0.02);
 }
 
@@ -1093,7 +1024,7 @@ body{
 }
 
 .jobNotes{
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
   font-size: 12.5px;
   line-height: 1.45;
@@ -1103,7 +1034,7 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top: 10px;
+  margin-top: 8px;
   gap: 10px;
 }
 
@@ -1123,7 +1054,7 @@ body{
 }
 
 .jobStatusControl{
-  display: grid;
+  display:grid;
   gap: 8px;
   justify-items: end;
 }
@@ -1135,9 +1066,11 @@ body{
 
 .jobNotesInput{
   margin-top: 10px;
+  min-height: 90px;
+  max-height: 140px;
 }
 
-/* Status pills */
+/* -------------------- Status Pills -------------------- */
 .pill{
   padding: 5px 9px;
   border-radius: 999px;
@@ -1180,7 +1113,7 @@ body{
 .statTile{
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 12px;
+  padding: 10px;
   background: rgba(11,31,59,0.02);
 }
 
@@ -1216,7 +1149,7 @@ body{
   gap: 10px;
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 11px 12px;
+  padding: 10px 11px;
   background: #fff;
   cursor: pointer;
   transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
@@ -1283,11 +1216,13 @@ body{
 }
 
 @keyframes shimmer{
-  to { transform: translateX(100%); }
+  to{
+    transform: translateX(100%);
+  }
 }
 
 .dashboardLoadingStack{
-  display: grid;
+  display:grid;
   gap: 10px;
 }
 
@@ -1315,79 +1250,32 @@ body{
   background: rgba(11,31,59,0.35);
 }
 
-/* ---------- UX Polish: Dashboard Density ---------- */
-
-.jobCard{
-  padding: 11px 12px;
-}
-
-.jobNotes{
-  margin-top: 6px;
-}
-
-.jobMeta{
-  margin-top: 8px;
-}
-
-.recentItem{
-  padding: 10px 11px;
-}
-
-.quickMetric{
-  padding: 12px;
-}
-
-.statTile{
-  padding: 10px;
-}
-
-/* ---------- UX Polish: Textarea ---------- */
-
-.jobNotesInput textarea{
-  min-height: 90px;
-  max-height: 140px;
-}
-
-/* ---------- UX Polish: Hover ---------- */
-
-.jobCard:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 14px 30px rgba(10,16,32,0.10);
-}
-
-.btnPrimary:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 12px 22px rgba(215,38,56,0.22);
-}
-
-/* ---------- UX Polish: Hero ---------- */
-
-.dashboardHero{
-  padding: 26px 28px;
-}
-
-.dashboardSubtext{
-  margin-top: 14px;
-}
-
-/* ---------- UX Polish: Layout Balance ---------- */
-
-.dashboardDesktopGrid{
-  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
-}
-
-/* ---------- UX Polish: Scroll ---------- */
-
-.applicationsScroller{
-  scroll-behavior: smooth;
-}
-
-.jobsList{
-  scroll-behavior: smooth;
-}
-
-
 /* -------------------- Responsive -------------------- */
+@media (min-width: 680px){
+  .form{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 740px){
+  .controlsRow{
+    grid-template-columns: 1.55fr 0.9fr 0.95fr auto;
+    align-items:center;
+  }
+}
+
+@media (min-width: 980px){
+  .grid{
+    grid-template-columns: 1fr 1.4fr;
+  }
+}
+
+@media (min-width: 1101px){
+  .dashboardDesktopGrid .accountMainCard{
+    grid-column: auto;
+  }
+}
+
 @media (max-width: 1100px){
   .dashboardDesktopGrid{
     grid-template-columns: 1fr;
