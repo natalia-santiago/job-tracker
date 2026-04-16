@@ -4,79 +4,142 @@ import authMiddleware from "../middleware/auth.js";
 
 const router = express.Router();
 
-const allowedStatuses = new Set(["applied", "interview", "offer", "rejected"]);
+const ALLOWED_STATUSES = new Set(["applied", "interview", "offer", "rejected"]);
 
-const isMongooseValidationError = (err) =>
+const isValidationLikeError = (err) =>
   err?.name === "ValidationError" || err?.name === "CastError";
 
-const getUserId = (req) => req?.user?.id || req?.user?._id;
+const getUserId = (req) => req?.user?.id || req?.user?._id || null;
 
-const normalizeStatus = (val) => (val ?? "applied").toString().trim().toLowerCase();
+const normalizeStatus = (value) => (value ?? "applied").toString().trim().toLowerCase();
+
+const trimString = (value) => (typeof value === "string" ? value.trim() : "");
 
 const csvEscape = (value) => {
-  const s = (value ?? "").toString();
-  // Escape double quotes by doubling them
-  const escaped = s.replace(/"/g, '""');
-  // Wrap in quotes if contains comma, quote, or newline
-  if (/[",\n\r]/.test(escaped)) return `"${escaped}"`;
+  const stringValue = (value ?? "").toString();
+  const escaped = stringValue.replace(/"/g, '""');
+
+  if (/[",\n\r]/.test(escaped)) {
+    return `"${escaped}"`;
+  }
+
   return escaped;
+};
+
+const ensureAuthorizedUser = (req, res) => {
+  const userId = getUserId(req);
+
+  if (!userId) {
+    res.status(401).json({ error: "Unauthorized" });
+    return null;
+  }
+
+  return userId;
+};
+
+const buildJobUpdates = (body, requireAllFields = false) => {
+  const updates = {};
+
+  if (requireAllFields || typeof body?.company === "string") {
+    updates.company = trimString(body?.company);
+  }
+
+  if (requireAllFields || typeof body?.position === "string") {
+    updates.position = trimString(body?.position);
+  }
+
+  if (typeof body?.notes === "string") {
+    updates.notes = trimString(body.notes);
+  }
+
+  if (typeof body?.status === "string") {
+    const normalized = normalizeStatus(body.status);
+
+    if (!ALLOWED_STATUSES.has(normalized)) {
+      return {
+        error: `Invalid status. Must be one of: ${Array.from(ALLOWED_STATUSES).join(", ")}`,
+      };
+    }
+
+    updates.status = normalized;
+  }
+
+  if (requireAllFields) {
+    if (!updates.company || !updates.position) {
+      return { error: "Company and position are required" };
+    }
+
+    if (!updates.status) {
+      updates.status = "applied";
+    }
+  }
+
+  return { updates };
+};
+
+const handleServerError = (res, context, err, fallbackMessage) => {
+  console.error(`❌ ${context}:`, err);
+
+  if (isValidationLikeError(err)) {
+    return res.status(400).json({
+      error: err.message,
+      details: err.errors || null,
+    });
+  }
+
+  return res.status(500).json({
+    error: err?.message || fallbackMessage,
+  });
 };
 
 // -------------------- CSV EXPORT --------------------
 // GET /api/jobs/export.csv
 router.get("/export.csv", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized: missing user id" });
-    }
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const jobs = await Job.find({ user: userId }).sort({ createdAt: -1 });
 
     const headers = ["company", "position", "status", "notes", "createdAt", "updatedAt"];
-    const lines = [headers.join(",")];
+    const rows = jobs.map((job) =>
+      [
+        csvEscape(job.company),
+        csvEscape(job.position),
+        csvEscape(job.status),
+        csvEscape(job.notes),
+        csvEscape(job.createdAt ? new Date(job.createdAt).toISOString() : ""),
+        csvEscape(job.updatedAt ? new Date(job.updatedAt).toISOString() : ""),
+      ].join(",")
+    );
 
-    for (const j of jobs) {
-      lines.push(
-        [
-          csvEscape(j.company),
-          csvEscape(j.position),
-          csvEscape(j.status),
-          csvEscape(j.notes),
-          csvEscape(j.createdAt ? new Date(j.createdAt).toISOString() : ""),
-          csvEscape(j.updatedAt ? new Date(j.updatedAt).toISOString() : ""),
-        ].join(",")
-      );
-    }
-
-    const csv = lines.join("\n");
+    const csv = [headers.join(","), ...rows].join("\n");
 
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", 'attachment; filename="job-tracker-export.csv"');
+
     return res.status(200).send(csv);
   } catch (err) {
-    console.error("❌ EXPORT CSV ERROR:", err);
-    return res.status(500).json({
-      error: err?.message || "Failed to export jobs",
-    });
+    return handleServerError(res, "EXPORT CSV ERROR", err, "Failed to export jobs");
   }
 });
 
-// -------------------- STATS (OPTIONAL, NICE FOR REAL PRODUCT) --------------------
+// -------------------- STATS --------------------
 // GET /api/jobs/stats
 router.get("/stats", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized: missing user id" });
-    }
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const jobs = await Job.find({ user: userId }).select("status createdAt updatedAt");
 
     const counts = { applied: 0, interview: 0, offer: 0, rejected: 0 };
-    for (const j of jobs) {
-      const s = normalizeStatus(j.status);
-      if (counts[s] !== undefined) counts[s] += 1;
+
+    for (const job of jobs) {
+      const status = normalizeStatus(job.status);
+      if (counts[status] !== undefined) {
+        counts[status] += 1;
+      }
     }
 
     const total = jobs.length;
@@ -90,10 +153,7 @@ router.get("/stats", authMiddleware, async (req, res) => {
       counts,
     });
   } catch (err) {
-    console.error("❌ JOB STATS ERROR:", err);
-    return res.status(500).json({
-      error: err?.message || "Failed to fetch job stats",
-    });
+    return handleServerError(res, "JOB STATS ERROR", err, "Failed to fetch job stats");
   }
 });
 
@@ -101,48 +161,26 @@ router.get("/stats", authMiddleware, async (req, res) => {
 // POST /api/jobs
 router.post("/", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized: missing user id" });
-    }
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
-    const company = (req.body?.company ?? "").toString().trim();
-    const position = (req.body?.position ?? "").toString().trim();
-    const notes = (req.body?.notes ?? "").toString().trim();
-    const statusRaw = normalizeStatus(req.body?.status);
+    const { updates, error } = buildJobUpdates(req.body, true);
 
-    if (!company || !position) {
-      return res.status(400).json({ error: "company and position are required" });
-    }
-
-    if (!allowedStatuses.has(statusRaw)) {
-      return res.status(400).json({
-        error: `Invalid status. Must be one of: ${Array.from(allowedStatuses).join(", ")}`,
-      });
+    if (error) {
+      return res.status(400).json({ error });
     }
 
     const job = await Job.create({
       user: userId,
-      company,
-      position,
-      status: statusRaw,
-      notes,
+      company: updates.company,
+      position: updates.position,
+      status: updates.status,
+      notes: updates.notes || "",
     });
 
     return res.status(201).json(job);
   } catch (err) {
-    console.error("❌ CREATE JOB ERROR:", err);
-
-    if (isMongooseValidationError(err)) {
-      return res.status(400).json({
-        error: err.message,
-        details: err.errors || null,
-      });
-    }
-
-    return res.status(500).json({
-      error: err?.message || "Failed to create job",
-    });
+    return handleServerError(res, "CREATE JOB ERROR", err, "Failed to create job");
   }
 });
 
@@ -150,42 +188,33 @@ router.post("/", authMiddleware, async (req, res) => {
 // GET /api/jobs
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized: missing user id" });
-    }
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const jobs = await Job.find({ user: userId }).sort({ createdAt: -1 });
     return res.json(jobs);
   } catch (err) {
-    console.error("❌ FETCH JOBS ERROR:", err);
-    return res.status(500).json({
-      error: err?.message || "Failed to fetch jobs",
-    });
+    return handleServerError(res, "FETCH JOBS ERROR", err, "Failed to fetch jobs");
   }
 });
 
-// -------------------- READ ONE (OPTIONAL) --------------------
+// -------------------- READ ONE --------------------
 // GET /api/jobs/:id
 router.get("/:id", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ error: "Unauthorized: missing user id" });
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const { id } = req.params;
-
     const job = await Job.findOne({ _id: id, user: userId });
-    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    if (!job) {
+      return res.status(404).json({ error: "Job not found" });
+    }
 
     return res.json(job);
   } catch (err) {
-    console.error("❌ FETCH JOB ERROR:", err);
-
-    if (isMongooseValidationError(err)) {
-      return res.status(400).json({ error: err.message, details: err.errors || null });
-    }
-
-    return res.status(500).json({ error: err?.message || "Failed to fetch job" });
+    return handleServerError(res, "FETCH JOB ERROR", err, "Failed to fetch job");
   }
 });
 
@@ -193,42 +222,36 @@ router.get("/:id", authMiddleware, async (req, res) => {
 // PUT /api/jobs/:id
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ error: "Unauthorized: missing user id" });
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const { id } = req.params;
+    const { updates, error } = buildJobUpdates(req.body, true);
 
-    // whitelist updates
-    const updates = {};
-    if (typeof req.body?.company === "string") updates.company = req.body.company.trim();
-    if (typeof req.body?.position === "string") updates.position = req.body.position.trim();
-    if (typeof req.body?.notes === "string") updates.notes = req.body.notes.trim();
-    if (typeof req.body?.status === "string") {
-      const s = normalizeStatus(req.body.status);
-      if (!allowedStatuses.has(s)) {
-        return res.status(400).json({
-          error: `Invalid status. Must be one of: ${Array.from(allowedStatuses).join(", ")}`,
-        });
-      }
-      updates.status = s;
+    if (error) {
+      return res.status(400).json({ error });
     }
 
     const updated = await Job.findOneAndUpdate(
       { _id: id, user: userId },
-      { $set: updates },
+      {
+        $set: {
+          company: updates.company,
+          position: updates.position,
+          status: updates.status,
+          notes: updates.notes || "",
+        },
+      },
       { new: true, runValidators: true }
     );
 
-    if (!updated) return res.status(404).json({ error: "Job not found" });
-    return res.json(updated);
-  } catch (err) {
-    console.error("❌ UPDATE JOB ERROR:", err);
-
-    if (isMongooseValidationError(err)) {
-      return res.status(400).json({ error: err.message, details: err.errors || null });
+    if (!updated) {
+      return res.status(404).json({ error: "Job not found" });
     }
 
-    return res.status(500).json({ error: err?.message || "Failed to update job" });
+    return res.json(updated);
+  } catch (err) {
+    return handleServerError(res, "UPDATE JOB ERROR", err, "Failed to update job");
   }
 });
 
@@ -236,32 +259,24 @@ router.put("/:id", authMiddleware, async (req, res) => {
 // PATCH /api/jobs/:id
 router.patch("/:id", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ error: "Unauthorized: missing user id" });
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const { id } = req.params;
+    const { updates, error } = buildJobUpdates(req.body, false);
 
-    // whitelist updates (same as PUT)
-    const updates = {};
-    if (typeof req.body?.company === "string") updates.company = req.body.company.trim();
-    if (typeof req.body?.position === "string") updates.position = req.body.position.trim();
-    if (typeof req.body?.notes === "string") updates.notes = req.body.notes.trim();
-
-    if (typeof req.body?.status === "string") {
-      const s = normalizeStatus(req.body.status);
-      if (!allowedStatuses.has(s)) {
-        return res.status(400).json({
-          error: `Invalid status. Must be one of: ${Array.from(allowedStatuses).join(", ")}`,
-        });
-      }
-      updates.status = s;
+    if (error) {
+      return res.status(400).json({ error });
     }
 
-    // If nothing to update, return the existing job (or 400)
     if (Object.keys(updates).length === 0) {
-      const job = await Job.findOne({ _id: id, user: userId });
-      if (!job) return res.status(404).json({ error: "Job not found" });
-      return res.json(job);
+      const existingJob = await Job.findOne({ _id: id, user: userId });
+
+      if (!existingJob) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      return res.json(existingJob);
     }
 
     const updated = await Job.findOneAndUpdate(
@@ -270,16 +285,13 @@ router.patch("/:id", authMiddleware, async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    if (!updated) return res.status(404).json({ error: "Job not found" });
-    return res.json(updated);
-  } catch (err) {
-    console.error("❌ PATCH JOB ERROR:", err);
-
-    if (isMongooseValidationError(err)) {
-      return res.status(400).json({ error: err.message, details: err.errors || null });
+    if (!updated) {
+      return res.status(404).json({ error: "Job not found" });
     }
 
-    return res.status(500).json({ error: err?.message || "Failed to update job" });
+    return res.json(updated);
+  } catch (err) {
+    return handleServerError(res, "PATCH JOB ERROR", err, "Failed to update job");
   }
 });
 
@@ -287,18 +299,22 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 // DELETE /api/jobs/:id
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ error: "Unauthorized: missing user id" });
+    const userId = ensureAuthorizedUser(req, res);
+    if (!userId) return;
 
     const { id } = req.params;
-
     const deleted = await Job.findOneAndDelete({ _id: id, user: userId });
-    if (!deleted) return res.status(404).json({ error: "Job not found" });
 
-    return res.json({ ok: true });
+    if (!deleted) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    return res.json({
+      ok: true,
+      message: "Job deleted",
+    });
   } catch (err) {
-    console.error("❌ DELETE JOB ERROR:", err);
-    return res.status(500).json({ error: err?.message || "Failed to delete job" });
+    return handleServerError(res, "DELETE JOB ERROR", err, "Failed to delete job");
   }
 });
 

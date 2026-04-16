@@ -10,14 +10,23 @@ import axios from "axios";
     VITE_API_URL=https://your-backend.onrender.com/api
 */
 
+const rawBaseUrl = import.meta.env.VITE_API_URL;
+
+if (!rawBaseUrl) {
+  console.warn("VITE_API_URL is not defined. API requests will fail until it is set.");
+}
+
+const normalizedBaseUrl = rawBaseUrl?.replace(/\/+$/, "");
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: normalizedBaseUrl,
+  timeout: 20000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// 🔐 Attach token to every request (if present)
+// Attach token to every request if present
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -31,13 +40,21 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Optional: global response handling (future-proofing)
+// Global response handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If token expired / invalid → auto logout later if you want
-    if (error?.response?.status === 401) {
-      console.warn("Unauthorized — token may be invalid or expired");
+    if (error?.code === "ECONNABORTED") {
+      console.warn("API request timed out.");
+    }
+
+    if (!error?.response) {
+      console.warn("Network error. The backend may be unavailable or waking up.");
+      return Promise.reject(error);
+    }
+
+    if (error.response.status === 401) {
+      console.warn("Unauthorized. Token may be invalid or expired.");
     }
 
     return Promise.reject(error);

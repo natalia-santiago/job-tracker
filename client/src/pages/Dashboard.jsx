@@ -174,8 +174,8 @@ export default function Dashboard() {
     };
 
     if (!payload.company || !payload.position) {
-      setError("Company and Position are required.");
-      showToast("error", "Company and Position are required.");
+      setError("Company and position are required.");
+      showToast("error", "Company and position are required.");
       return;
     }
 
@@ -254,8 +254,8 @@ export default function Dashboard() {
 
   const statusSummary = useMemo(() => {
     if (!jobs.length) return "Start by adding your first job application.";
-    if (stats.counts.offer > 0) return "You’ve already got offers in progress — keep the momentum going.";
-    if (stats.counts.interview > 0) return "You’ve got interviews in motion — stay organized and follow up.";
+    if (stats.counts.offer > 0) return "You already have offers in progress. Keep the momentum going.";
+    if (stats.counts.interview > 0) return "You have interviews in motion. Stay organized and follow up.";
     return "Keep building your pipeline and tracking each opportunity.";
   }, [jobs, stats]);
 
@@ -441,7 +441,17 @@ export default function Dashboard() {
                 const isBusy = busyId === job._id;
 
                 return (
-                  <article className="jobCard compactJobCard" key={job._id}>
+                  <article
+                    className="jobCard compactJobCard"
+                    key={job._id}
+                    onClick={() => {
+                      if (!isEditing && !isBusy) {
+                        startEdit(job);
+                        showToast("success", "Editing job");
+                      }
+                    }}
+                    title={isEditing ? "Editing job" : "Click to edit"}
+                  >
                     <div className="jobTop">
                       <div className="jobMain">
                         {isEditing ? (
@@ -449,6 +459,7 @@ export default function Dashboard() {
                             <input
                               className="input compactInput"
                               value={editForm.company}
+                              onClick={(e) => e.stopPropagation()}
                               onChange={(e) =>
                                 setEditForm((p) => ({ ...p, company: e.target.value }))
                               }
@@ -458,6 +469,7 @@ export default function Dashboard() {
                             <input
                               className="input compactInput jobEditInput"
                               value={editForm.position}
+                              onClick={(e) => e.stopPropagation()}
                               onChange={(e) =>
                                 setEditForm((p) => ({ ...p, position: e.target.value }))
                               }
@@ -478,6 +490,7 @@ export default function Dashboard() {
                           <select
                             className="input statusSelect compactInput"
                             value={editForm.status}
+                            onClick={(e) => e.stopPropagation()}
                             onChange={(e) =>
                               setEditForm((p) => ({ ...p, status: e.target.value }))
                             }
@@ -494,6 +507,7 @@ export default function Dashboard() {
                             <select
                               className="input statusSelect compactInput"
                               value={job.status || "applied"}
+                              onClick={(e) => e.stopPropagation()}
                               onChange={(e) =>
                                 updateJob(job._id, { status: e.target.value }, "Status updated")
                               }
@@ -518,6 +532,7 @@ export default function Dashboard() {
                         className="input textarea jobNotesInput compactInput"
                         rows={3}
                         value={editForm.notes}
+                        onClick={(e) => e.stopPropagation()}
                         onChange={(e) =>
                           setEditForm((p) => ({ ...p, notes: e.target.value }))
                         }
@@ -541,7 +556,10 @@ export default function Dashboard() {
                             <button
                               type="button"
                               className="btn btnPrimary btnSmall"
-                              onClick={() => saveEdit(job._id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                saveEdit(job._id);
+                              }}
                               disabled={isBusy}
                             >
                               {isBusy ? "Saving..." : "Save"}
@@ -549,7 +567,10 @@ export default function Dashboard() {
                             <button
                               type="button"
                               className="btn btnGhost btnSmall"
-                              onClick={cancelEdit}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                cancelEdit();
+                              }}
                               disabled={isBusy}
                             >
                               Cancel
@@ -560,7 +581,10 @@ export default function Dashboard() {
                             <button
                               type="button"
                               className="btn btnGhost btnSmall"
-                              onClick={() => startEdit(job)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                startEdit(job);
+                              }}
                               disabled={isBusy}
                             >
                               Edit
@@ -568,7 +592,10 @@ export default function Dashboard() {
                             <button
                               type="button"
                               className="btn btnDanger btnSmall"
-                              onClick={() => deleteJob(job._id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteJob(job._id);
+                              }}
                               disabled={isBusy}
                             >
                               {isBusy ? "Deleting..." : "Delete"}
@@ -618,7 +645,7 @@ export default function Dashboard() {
                       : stats.counts.offer > 0
                       ? "Your pipeline is converting into offers. Keep notes updated so you can compare opportunities clearly."
                       : stats.counts.interview > 0
-                      ? "You’re making progress into interviews. Focus on follow-ups and interview prep notes."
+                      ? "You’re making progress with interviews. Focus on follow-ups and interview prep notes."
                       : "Your tracker is building momentum. Keep adding applications consistently to grow your pipeline."}
                   </div>
                 </div>
@@ -665,7 +692,7 @@ export default function Dashboard() {
                   >
                     <div className="recentMain">
                       <div className="recentTitle">
-                        {j.company} — {j.position}
+                        {j.company} · {j.position}
                       </div>
                       <div className="recentSub">
                         {j.updatedAt

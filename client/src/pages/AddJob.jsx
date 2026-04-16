@@ -194,13 +194,13 @@ export default function AddJob() {
             <h2 className="dashboardHeading">Add a job to your pipeline</h2>
             <p className="dashboardSubtext">
               Save the company, role, status, and notes so every opportunity stays
-              organized from the start.
+              organized in one place from the start.
             </p>
           </div>
 
           <div className="addJobHeroSide">
             <div className="quickMetric">
-              <div className="quickMetricLabel">Default status</div>
+              <div className="quickMetricLabel">Starting status</div>
               <div className="quickMetricValue addJobMetricValue">
                 {form.status.charAt(0).toUpperCase() + form.status.slice(1)}
               </div>
@@ -214,7 +214,7 @@ export default function AddJob() {
           <div className="cardHeader dashboardCardHeader">
             <div className="dashboardCardHeaderMain">
               <h2 className="cardTitle">Application details</h2>
-              <span className="cardHint">Create a clean, searchable job entry</span>
+              <span className="cardHint">Create a clean and searchable job entry</span>
             </div>
 
             <button
@@ -223,7 +223,7 @@ export default function AddJob() {
               onClick={() => navigate("/dashboard")}
               disabled={saving}
             >
-              ← Back
+              Back
             </button>
           </div>
 
@@ -237,7 +237,7 @@ export default function AddJob() {
                 className="input"
                 value={form.company}
                 onChange={(e) => handleChange("company", e.target.value)}
-                placeholder="e.g., DLB Associates"
+                placeholder="For example, DLB Associates"
                 disabled={saving}
                 autoFocus
                 autoComplete="organization"
@@ -253,7 +253,7 @@ export default function AddJob() {
                 className="input"
                 value={form.position}
                 onChange={(e) => handleChange("position", e.target.value)}
-                placeholder="e.g., Junior Full-Stack Developer"
+                placeholder="For example, Junior Full-Stack Developer"
                 disabled={saving}
                 autoComplete="off"
               />
@@ -288,7 +288,7 @@ export default function AddJob() {
                 rows={5}
                 value={form.notes}
                 onChange={(e) => handleChange("notes", e.target.value)}
-                placeholder="Interview dates, recruiter contact, links, reminders, application details..."
+                placeholder="Add interview dates, recruiter contact details, links, reminders, or application notes"
                 disabled={saving}
               />
             </div>
@@ -313,28 +313,30 @@ export default function AddJob() {
         <aside className="card addJobTipsCard">
           <div className="cardHeader">
             <h2 className="cardTitle">What to include</h2>
-            <span className="cardHint">Better notes, better tracking</span>
+            <span className="cardHint">Helpful details make tracking easier</span>
           </div>
 
           <div className="addJobTipsList">
             <div className="addJobTip">
               <div className="addJobTipTitle">Company and role</div>
               <div className="addJobTipBody">
-                Use the exact employer and title so search and sorting stay clean later.
+                Use the exact employer name and position title so search and sorting stay
+                clean later.
               </div>
             </div>
 
             <div className="addJobTip">
               <div className="addJobTipTitle">Status updates</div>
               <div className="addJobTipBody">
-                Start with the current stage now and update it as the process moves.
+                Start with the current stage and update it as the process moves forward.
               </div>
             </div>
 
             <div className="addJobTip">
               <div className="addJobTipTitle">Useful notes</div>
               <div className="addJobTipBody">
-                Add recruiter names, deadlines, interview dates, links, or follow-up reminders.
+                Add recruiter names, deadlines, interview dates, links, or follow-up
+                reminders so nothing gets lost.
               </div>
             </div>
           </div>

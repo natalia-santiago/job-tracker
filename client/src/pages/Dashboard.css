@@ -17,7 +17,10 @@
   --radius-sm: 12px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  font-family: inherit;
+}
 
 body{
   margin: 0;
@@ -26,7 +29,6 @@ body{
     radial-gradient(circle at bottom right, rgba(11,31,59,0.08), transparent 34%),
     var(--bg);
   color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 /* -------------------- Shared Page -------------------- */
@@ -164,6 +166,8 @@ body{
   display: grid;
   gap: 16px;
   align-self: start;
+  position: sticky;
+  top: 20px;
 }
 
 .card{
@@ -171,7 +175,7 @@ body{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 16px;
 }
 
 .cardHeader{
@@ -336,18 +340,27 @@ body{
   background: #fff;
   color: var(--ink);
   transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  height: 44px;
+}
+
+.input::placeholder{
+  color: rgba(11,31,59,0.35);
 }
 
 .input:focus{
   border-color: rgba(215,38,56,0.35);
   box-shadow: 0 0 0 3px rgba(215,38,56,0.10);
+  background: #fff;
 }
 
 .compactInput{
   padding: 9px 11px;
 }
 
-.textarea{ resize: vertical; }
+.textarea{
+  resize: vertical;
+  height: auto;
+}
 
 .controlsRow{
   display:grid;
@@ -390,6 +403,8 @@ body{
   background: var(--red);
   color: white;
   box-shadow: 0 8px 16px rgba(215,38,56,0.15);
+  height: 48px;
+  font-weight: 600;
 }
 
 .btnPrimary:hover{ background: var(--red-2); }
@@ -413,6 +428,7 @@ body{
 .btnSmall{
   padding: 8px 12px;
   font-size: 13px;
+  height: auto;
 }
 
 /* -------------------- Auth Layout -------------------- */
@@ -898,7 +914,7 @@ body{
 .accountTip{
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 14px;
+  padding: 13px 14px;
   background: rgba(11,31,59,0.02);
 }
 
@@ -913,6 +929,7 @@ body{
   color: var(--muted);
   font-size: 13px;
   line-height: 1.6;
+  word-break: break-word;
 }
 
 /* -------------------- Account Desktop Polish -------------------- */
@@ -932,14 +949,6 @@ body{
   min-height: 52px;
 }
 
-.accountTip{
-  padding: 13px 14px;
-}
-
-.accountTipBody{
-  word-break: break-word;
-}
-
 @media (min-width: 1101px){
   .dashboardDesktopGrid .accountMainCard{
     grid-column: auto;
@@ -947,6 +956,21 @@ body{
 }
 
 /* -------------------- Jobs -------------------- */
+.jobsList{
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.jobsList::-webkit-scrollbar{
+  width: 10px;
+}
+
+.jobsList::-webkit-scrollbar-thumb{
+  background: rgba(11,31,59,0.12);
+  border-radius: 999px;
+}
+
 .jobsGrid{
   display:grid;
   grid-template-columns: 1fr;
@@ -975,8 +999,16 @@ body{
 .jobCard{
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 12px;
   background: #fff;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  cursor: pointer;
+}
+
+.jobCard:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  background: rgba(11,31,59,0.02);
 }
 
 .compactJobCard{
@@ -1012,7 +1044,7 @@ body{
 .jobNotes{
   margin: 8px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.45;
 }
 
@@ -1064,10 +1096,28 @@ body{
   white-space: nowrap;
 }
 
-.pill--applied{ background: rgba(11,31,59,0.05); }
-.pill--interview{ background: rgba(215,38,56,0.08); color: var(--red); }
-.pill--offer{ background: rgba(15,42,82,0.08); }
-.pill--rejected{ background: rgba(10,16,32,0.06); }
+.pill--applied{
+  background: rgba(11,31,59,0.06);
+  color: var(--navy);
+}
+
+.pill--interview{
+  background: rgba(255,193,7,0.18);
+  color: #b58100;
+  border-color: rgba(181,129,0,0.22);
+}
+
+.pill--offer{
+  background: rgba(40,167,69,0.18);
+  color: #1f7a36;
+  border-color: rgba(31,122,54,0.22);
+}
+
+.pill--rejected{
+  background: rgba(220,53,69,0.15);
+  color: #a61e2b;
+  border-color: rgba(166,30,43,0.20);
+}
 
 /* -------------------- Stats -------------------- */
 .statsGrid{
@@ -1118,10 +1168,13 @@ body{
   padding: 11px 12px;
   background: #fff;
   cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .recentItem:hover{
   background: rgba(11,31,59,0.02);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
 }
 
 .recentMain{
@@ -1219,6 +1272,7 @@ body{
 
   .dashboardSideColumn{
     grid-template-columns: 1fr 1fr;
+    position: static;
   }
 
   .addJobMainCard,
@@ -1262,9 +1316,16 @@ body{
 @media (max-width: 760px){
   .dashboardSideColumn{
     grid-template-columns: 1fr;
+    position: static;
   }
 
   .applicationsScroller{
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .jobsList{
     max-height: none;
     overflow: visible;
     padding-right: 0;

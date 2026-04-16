@@ -86,7 +86,7 @@ export default function Account() {
           <div className="brandMark" />
           <div>
             <h1 className="title">Account</h1>
-            <p className="subtitle">Your profile and authenticated session details</p>
+            <p className="subtitle">Your profile and session details</p>
           </div>
         </div>
 
@@ -117,8 +117,8 @@ export default function Account() {
             <div className="dashboardEyebrow">Profile</div>
             <h2 className="dashboardHeading">Manage your account details</h2>
             <p className="dashboardSubtext">
-              View the information connected to your authenticated session and quickly
-              return to your job tracker workspace.
+              View the information connected to your account and return to your job
+              tracker workspace whenever you are ready.
             </p>
           </div>
 
@@ -126,8 +126,8 @@ export default function Account() {
             <div className="accountHeroCard">
               <div className="accountHeroAvatar">{initials}</div>
               <div className="accountHeroText">
-                <div className="accountHeroName">{user?.name || "—"}</div>
-                <div className="accountHeroEmail">{user?.email || "—"}</div>
+                <div className="accountHeroName">{user?.name || "Not set"}</div>
+                <div className="accountHeroEmail">{user?.email || "Not set"}</div>
               </div>
             </div>
           </div>
@@ -138,18 +138,19 @@ export default function Account() {
         <section className="card accountMainCard">
           <div className="cardHeader">
             <h2 className="cardTitle">Account Information</h2>
-            <span className="cardHint">Pulled from your authenticated session</span>
+            <span className="cardHint">Loaded from your authenticated session</span>
           </div>
 
           {loading ? (
             <div className="empty">
               <div className="spinner" />
-              <span>Loading account…</span>
+              <span>Loading account details…</span>
             </div>
           ) : (
             <div className="accountInfoList">
-              <InfoRow label="Name" value={user?.name || "—"} />
-              <InfoRow label="Email" value={user?.email || "—"} />
+              <InfoRow label="Name" value={user?.name || "Not set"} />
+              <InfoRow label="Email" value={user?.email || "Not set"} />
+
               {joinedDate && <InfoRow label="Joined" value={joinedDate} />}
 
               <div className="accountActions">
@@ -177,12 +178,12 @@ export default function Account() {
           <div className="accountTipsList">
             <div className="accountTip">
               <div className="accountTipTitle">Signed in as</div>
-              <div className="accountTipBody">{user?.email || "—"}</div>
+              <div className="accountTipBody">{user?.email || "Not set"}</div>
             </div>
 
             <div className="accountTip">
               <div className="accountTipTitle">Profile name</div>
-              <div className="accountTipBody">{user?.name || "—"}</div>
+              <div className="accountTipBody">{user?.name || "Not set"}</div>
             </div>
 
             <div className="accountTip">

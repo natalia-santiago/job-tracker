@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "./Dashboard.css";
@@ -10,14 +10,32 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showWakeMessage, setShowWakeMessage] = useState(false);
+
+  useEffect(() => {
+    let timer;
+
+    if (loading) {
+      timer = setTimeout(() => {
+        setShowWakeMessage(true);
+      }, 2000);
+    } else {
+      setShowWakeMessage(false);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loading]);
 
   const handleChange = (e) =>
-    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    setShowWakeMessage(false);
 
     try {
       const res = await api.post("/auth/login", form);
@@ -90,7 +108,7 @@ export default function Login() {
                 <button
                   type="button"
                   className="passwordToggle"
-                  onClick={() => setShowPassword((p) => !p)}
+                  onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -101,6 +119,12 @@ export default function Login() {
             <button className="btn btnPrimary authSubmit" type="submit" disabled={loading}>
               {loading ? "Logging in..." : "Log In"}
             </button>
+
+            {showWakeMessage && !error && (
+              <p className="authSwitch" aria-live="polite">
+                This is taking a little longer than usual. The server may still be waking up.
+              </p>
+            )}
 
             <p className="authSwitch">
               Need an account?{" "}
@@ -121,8 +145,8 @@ export default function Login() {
           <div className="brandMark large" />
           <h1>Job Tracker</h1>
           <p>
-            Keep your job search organized with a workspace designed to track progress,
-            manage interviews, and stay focused on the next opportunity.
+            Track applications, manage interviews, and stay focused on your next
+            opportunity.
           </p>
         </div>
       </div>

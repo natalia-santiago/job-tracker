@@ -1,4 +1,8 @@
-/* IMPORTANT: App.css should NOT fight page layout or centering */
+/* 
+  App.css
+  - Keeps global layout stable
+  - Does NOT control page layout (pages handle that)
+*/
 
 #root {
   width: 100%;
@@ -8,6 +12,31 @@
   margin: 0;
   padding: 0;
 
-  /* Let individual pages control layout */
+  /* Prevent layout issues */
+  overflow-x: hidden;
+
+  /* Let pages control layout */
   display: block;
+}
+
+/* Ensure media behaves correctly */
+img,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Remove default button inconsistencies */
+button {
+  font: inherit;
+  border: none;
+  background: none;
+}
+
+/* Improve text rendering consistency */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

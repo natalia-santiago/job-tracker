@@ -1,20 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700&display=swap');
+
+/*
+  Global foundation
+  - Typography
+  - Rendering
+  - Reset behavior
+*/
+
 :root {
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-main: 'League Spartan', ui-sans-serif, system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial;
+
+  font-family: var(--font-main);
+
   line-height: 1.5;
   font-weight: 400;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* IMPORTANT: force light layout, no Vite dark mode */
   color-scheme: light;
 }
 
-* {
+/* 🔥 Ensure font consistency everywhere */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  font-family: var(--font-main);
 }
 
 html,
@@ -22,15 +38,21 @@ body {
   height: 100%;
 }
 
+/* 🔥 Prevent mobile input zoom + layout bugs */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Base body */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
 
-  /* IMPORTANT: do NOT center with flex (causes clipping) */
+  /* DO NOT use flex here */
   display: block;
 
-  /* Dashboard.css controls background */
+  /* Controlled by Dashboard.css */
   background: transparent;
   color: inherit;
 }
@@ -39,12 +61,24 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
 }
+
 a:hover {
   text-decoration: underline;
 }
 
-/* Do not globally style buttons */
+/* Buttons reset (no styling conflicts) */
 button {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Inputs consistency */
+input,
+textarea,
+select {
   font: inherit;
 }

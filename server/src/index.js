@@ -9,32 +9,32 @@ import jobRoutes from "./routes/jobs.js";
 dotenv.config();
 
 const app = express();
-
-/* -------------------- CORS (NO wildcard route) -------------------- */
+const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.CLIENT_URL, // set to https://job-tracker-frontend.netlify.app in Render env vars
+  process.env.CLIENT_URL,
 ].filter(Boolean);
 
 const corsOptions = {
-  origin: (origin, cb) => {
-    // allow Postman/curl or same-origin (no Origin header)
-    if (!origin) return cb(null, true);
+  origin: (origin, callback) => {
+    // Allow requests with no Origin header (Postman, curl, server-to-server)
+    if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) return cb(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-    return cb(new Error(`CORS blocked for origin: ${origin}`));
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: false,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// ✅ Handle CORS for all requests
+/* -------------------- Core Middleware -------------------- */
 app.use(cors(corsOptions));
 
-// ✅ Handle preflight WITHOUT app.options("*") / app.options("/*")
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     return cors(corsOptions)(req, res, () => res.sendStatus(204));
@@ -42,12 +42,19 @@ app.use((req, res, next) => {
   next();
 });
 
-/* -------------------- Middleware -------------------- */
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
-// Request logger (helps debugging)
+/* -------------------- Request Logger -------------------- */
 app.use((req, res, next) => {
-  console.log(`[REQ] ${req.method} ${req.url}`);
+  const start = Date.now();
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    console.log(
+      `[REQ] ${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`
+    );
+  });
+
   next();
 });
 
@@ -56,25 +63,78 @@ app.get("/", (req, res) => {
   res.send("Job Tracker API is running ✅");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    ok: true,
+    status: "healthy",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 
-/* -------------------- Error handling -------------------- */
-app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.message || err);
-  res.status(500).json({ message: err.message || "Server error" });
+/* -------------------- 404 Handler -------------------- */
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Route not found",
+  });
 });
 
-/* -------------------- DB + Server -------------------- */
-const PORT = process.env.PORT || 5000;
+/* -------------------- Error Handler -------------------- */
+app.use((err, req, res, next) => {
+  console.error("❌ Server error:", err.message || err);
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB connected");
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
+  // CORS-specific errors
+  if (err.message?.startsWith("CORS blocked")) {
+    return res.status(403).json({
+      error: err.message,
+    });
+  }
+
+  return res.status(500).json({
+    error: err.message || "Server error",
   });
+});
+
+/* -------------------- Startup -------------------- */
+async function startServer() {
+  try {
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI is missing");
+    }
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is missing");
+    }
+
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ MongoDB connected");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      if (allowedOrigins.length) {
+        console.log(`🌐 Allowed origins: ${allowedOrigins.join(", ")}`);
+      }
+    });
+  } catch (err) {
+    console.error("❌ Startup error:", err.message || err);
+    process.exit(1);
+  }
+}
+
+startServer();
+
+/* -------------------- Graceful Shutdown -------------------- */
+process.on("SIGINT", async () => {
+  console.log("⚠️ SIGINT received. Closing server...");
+  await mongoose.connection.close();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("⚠️ SIGTERM received. Closing server...");
+  await mongoose.connection.close();
+  process.exit(0);
+});
