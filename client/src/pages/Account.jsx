@@ -33,6 +33,11 @@ export default function Account() {
     return (first + last).toUpperCase() || "U";
   }, [user]);
 
+  const joinedDate = useMemo(() => {
+    if (!user?.createdAt) return "—";
+    return new Date(user.createdAt).toLocaleDateString();
+  }, [user]);
+
   const loadUser = async () => {
     const t = localStorage.getItem("token");
     if (!t) return logout();
@@ -56,7 +61,10 @@ export default function Account() {
   };
 
   useEffect(() => {
-    if (!token) navigate("/login");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     loadUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -66,11 +74,19 @@ export default function Account() {
   return (
     <div className="page">
       <header className="topbar">
-        <div className="brand">
+        <div
+          className="brand brandButton"
+          onClick={() => navigate("/dashboard")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate("/dashboard");
+          }}
+        >
           <div className="brandMark" />
           <div>
             <h1 className="title">Account</h1>
-            <p className="subtitle">Your profile details</p>
+            <p className="subtitle">Your profile and authenticated session details</p>
           </div>
         </div>
 
@@ -95,9 +111,31 @@ export default function Account() {
         </div>
       )}
 
-      {/* ✅ centered like Login/Register */}
-      <main className="grid" style={{ justifyItems: "center" }}>
-        <section className="card" style={{ width: "100%", maxWidth: 720 }}>
+      <section className="card accountHero">
+        <div className="accountHeroGrid">
+          <div>
+            <div className="dashboardEyebrow">Profile</div>
+            <h2 className="dashboardHeading">Manage your account details</h2>
+            <p className="dashboardSubtext">
+              View the information connected to your authenticated session and quickly
+              return to your job tracker workspace.
+            </p>
+          </div>
+
+          <div className="accountHeroSide">
+            <div className="accountHeroCard">
+              <div className="accountHeroAvatar">{initials}</div>
+              <div className="accountHeroText">
+                <div className="accountHeroName">{user?.name || "—"}</div>
+                <div className="accountHeroEmail">{user?.email || "—"}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="dashboardGrid accountLayout">
+        <section className="card accountMainCard">
           <div className="cardHeader">
             <h2 className="cardTitle">Account Information</h2>
             <span className="cardHint">Pulled from your authenticated session</span>
@@ -109,32 +147,12 @@ export default function Account() {
               <span>Loading account…</span>
             </div>
           ) : (
-            <div style={{ display: "grid", gap: 12 }}>
-              <div className="accountPill" style={{ borderRadius: 16, padding: 12 }}>
-                <div className="accountAvatar" style={{ width: 40, height: 40 }}>
-                  {initials}
-                </div>
-                <div className="accountText">
-                  <div className="accountPrimary" style={{ fontSize: 14 }}>
-                    {user?.name || "—"}
-                  </div>
-                  <div className="accountSecondary" style={{ fontSize: 12 }}>
-                    {user?.email || "—"}
-                  </div>
-                </div>
-              </div>
-
+            <div className="accountInfoList">
               <InfoRow label="Name" value={user?.name || "—"} />
               <InfoRow label="Email" value={user?.email || "—"} />
+              <InfoRow label="Joined" value={joinedDate} />
 
-              {user?.createdAt && (
-                <InfoRow
-                  label="Joined"
-                  value={new Date(user.createdAt).toLocaleDateString()}
-                />
-              )}
-
-              <div style={{ marginTop: 6, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <div className="accountActions">
                 <button
                   type="button"
                   className="btn btnPrimary"
@@ -149,6 +167,37 @@ export default function Account() {
             </div>
           )}
         </section>
+
+        <aside className="card accountTipsCard">
+          <div className="cardHeader">
+            <h2 className="cardTitle">Session Notes</h2>
+            <span className="cardHint">What this page represents</span>
+          </div>
+
+          <div className="accountTipsList">
+            <div className="accountTip">
+              <div className="accountTipTitle">Authenticated user</div>
+              <div className="accountTipBody">
+                This page reflects the user currently loaded from your protected session.
+              </div>
+            </div>
+
+            <div className="accountTip">
+              <div className="accountTipTitle">Persistent login</div>
+              <div className="accountTipBody">
+                Your token and profile are stored locally so the app can restore access.
+              </div>
+            </div>
+
+            <div className="accountTip">
+              <div className="accountTipTitle">Portfolio value</div>
+              <div className="accountTipBody">
+                This helps show authenticated routing, protected data fetching, and clean
+                account-state UX.
+              </div>
+            </div>
+          </div>
+        </aside>
       </main>
 
       <footer className="footer">
@@ -162,20 +211,9 @@ export default function Account() {
 
 function InfoRow({ label, value }) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "140px 1fr",
-        gap: 10,
-        alignItems: "center",
-        padding: "10px 12px",
-        borderRadius: 12,
-        border: "1px solid var(--border)",
-        background: "rgba(11,31,59,0.02)",
-      }}
-    >
-      <div style={{ fontWeight: 700, color: "var(--muted)" }}>{label}</div>
-      <div style={{ fontWeight: 700, color: "var(--navy)" }}>{value}</div>
+    <div className="infoRow">
+      <div className="infoRowLabel">{label}</div>
+      <div className="infoRowValue">{value}</div>
     </div>
   );
 }

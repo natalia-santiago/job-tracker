@@ -21,11 +21,15 @@
 
 body{
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at top left, rgba(215,38,56,0.08), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(11,31,59,0.08), transparent 34%),
+    var(--bg);
   color: var(--ink);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
+/* -------------------- Shared Page -------------------- */
 .page{
   max-width: 1100px;
   margin: 0 auto;
@@ -57,6 +61,14 @@ body{
   border-radius: 14px;
   background: radial-gradient(circle at 30% 30%, rgba(215,38,56,0.95), rgba(215,38,56,0.55) 40%, rgba(11,31,59,0.95) 85%);
   box-shadow: 0 10px 20px rgba(215,38,56,0.18);
+  flex-shrink: 0;
+}
+
+.brandMark.large{
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  box-shadow: 0 18px 34px rgba(215,38,56,0.20);
 }
 
 .title{
@@ -133,7 +145,7 @@ body{
   .grid{ grid-template-columns: 1fr 1.4fr; }
 }
 
-/* ✅ Dashboard-specific 3-column grid */
+/* Dashboard-specific 3-column grid */
 .dashboardGrid{
   margin-top: 18px;
   display:grid;
@@ -289,11 +301,17 @@ body{
   .fieldFull{ grid-column: 1 / -1; }
 }
 
-.field{ display:flex; flex-direction:column; gap: 6px; }
+.field{
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+}
 
 .label{
   font-size: 12px;
   color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .input{
@@ -304,6 +322,7 @@ body{
   outline: none;
   background: #fff;
   color: var(--ink);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .input:focus{
@@ -313,7 +332,7 @@ body{
 
 .textarea{ resize: vertical; }
 
-/* ✅ Controls row in Overview */
+/* Controls row in Overview */
 .controlsRow{
   display:grid;
   gap: 10px;
@@ -334,16 +353,23 @@ body{
   padding: 10px 14px;
   font-weight: 650;
   cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+.btn:hover{
+  transform: translateY(-1px);
 }
 
 .btn:disabled{
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .btnPrimary{
   background: var(--red);
   color: white;
+  box-shadow: 0 10px 20px rgba(215,38,56,0.18);
 }
 
 .btnPrimary:hover{ background: var(--red-2); }
@@ -352,6 +378,10 @@ body{
   background: transparent;
   border-color: var(--border);
   color: var(--navy);
+}
+
+.btnGhost:hover{
+  background: rgba(11,31,59,0.04);
 }
 
 .btnDanger{
@@ -363,6 +393,579 @@ body{
 .btnSmall{
   padding: 8px 12px;
   font-size: 13px;
+}
+
+/* -------------------- Auth Layout -------------------- */
+.authPage{
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.95fr);
+  background:
+    radial-gradient(circle at top left, rgba(215,38,56,0.10), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(11,31,59,0.10), transparent 34%),
+    linear-gradient(135deg, #f8fbff 0%, #f7f9fc 48%, #f2f5fb 100%);
+}
+
+.authLeft{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 28px;
+}
+
+.authCard{
+  width: 100%;
+  max-width: 470px;
+  padding: 32px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(11,31,59,0.12);
+  border-radius: 28px;
+  box-shadow:
+    0 24px 60px rgba(10,16,32,0.10),
+    0 8px 20px rgba(10,16,32,0.04);
+}
+
+.authHeader{
+  margin-bottom: 24px;
+}
+
+.authHeader h2{
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(2rem, 2.8vw, 2.55rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.authHeader p{
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 34ch;
+}
+
+.authForm{
+  grid-template-columns: 1fr !important;
+  gap: 16px;
+}
+
+.authSubmit{
+  margin-top: 4px;
+  min-height: 48px;
+  font-size: 0.98rem;
+}
+
+.authSwitch{
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.authSwitch span,
+.authSwitchLink{
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.authSwitch span:hover,
+.authSwitchLink:hover{
+  color: var(--red);
+  text-decoration: underline;
+}
+
+.passwordWrapper{
+  position: relative;
+}
+
+.passwordInput,
+.passwordWrapper .input{
+  padding-right: 72px;
+}
+
+.passwordToggle{
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.passwordToggle:hover{
+  color: var(--red);
+}
+
+.authRight{
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background:
+    linear-gradient(160deg, rgba(11,31,59,0.98) 0%, rgba(15,42,82,0.96) 52%, rgba(32,56,98,0.94) 100%);
+}
+
+.authRight::before{
+  content: "";
+  position: absolute;
+  inset: auto -10% -18% auto;
+  width: 360px;
+  height: 360px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(215,38,56,0.30), rgba(215,38,56,0.00) 68%);
+  pointer-events: none;
+}
+
+.authRight::after{
+  content: "";
+  position: absolute;
+  inset: 12% auto auto -8%;
+  width: 280px;
+  height: 280px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), rgba(255,255,255,0.00) 68%);
+  pointer-events: none;
+}
+
+.authBrand{
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+  color: white;
+}
+
+.authBrand h1{
+  margin: 24px 0 0;
+  font-size: clamp(2.6rem, 4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.authBrand p{
+  margin: 18px 0 0;
+  max-width: 28ch;
+  font-size: 1.06rem;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.82);
+}
+
+/* -------------------- Dashboard Hero -------------------- */
+.dashboardHero{
+  margin-top: 18px;
+  padding: 22px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.96));
+}
+
+.dashboardHeroGrid{
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.dashboardEyebrow{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(11,31,59,0.04);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.dashboardHeading{
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.dashboardSubtext{
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 640px;
+}
+
+.dashboardHeroActions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.quickMetrics{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quickMetric{
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff;
+  box-shadow: var(--shadow-2);
+}
+
+.quickMetricLabel{
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.quickMetricValue{
+  margin-top: 6px;
+  color: var(--navy);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+/* -------------------- Dashboard Pills / Insight -------------------- */
+.sectionPill{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(11,31,59,0.04);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.insightCard{
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(11,31,59,0.03);
+}
+
+.insightTitle{
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+.insightBody{
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* -------------------- Responsive Dashboard Hero -------------------- */
+@media (max-width: 980px){
+  .dashboardHeroGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px){
+  .dashboardHero{
+    padding: 18px;
+  }
+
+  .dashboardHeading{
+    font-size: 1.9rem;
+  }
+
+  .quickMetrics{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -------------------- Shared Brand Helpers -------------------- */
+.brandButton{
+  cursor: pointer;
+}
+
+/* -------------------- Add Job -------------------- */
+.addJobHero{
+  margin-top: 18px;
+  padding: 22px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.96));
+}
+
+.addJobHeroGrid{
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.75fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.addJobHeroSide{
+  display: grid;
+}
+
+.addJobMetricValue{
+  font-size: 1.35rem;
+}
+
+.addJobLayout{
+  align-items: start;
+}
+
+.addJobMainCard{
+  grid-column: span 2;
+}
+
+.addJobForm{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.addJobTextarea{
+  min-height: 150px;
+}
+
+.addJobActions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.addJobTipsCard{
+  height: fit-content;
+}
+
+.addJobTipsList{
+  display: grid;
+  gap: 12px;
+}
+
+.addJobTip{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(11,31,59,0.02);
+}
+
+.addJobTipTitle{
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.addJobTipBody{
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 1100px){
+  .addJobMainCard{
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 980px){
+  .addJobHeroGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px){
+  .addJobForm{
+    grid-template-columns: 1fr;
+  }
+
+  .addJobActions{
+    justify-content: stretch;
+    flex-direction: column;
+  }
+
+  .addJobActions .btn{
+    width: 100%;
+  }
+}
+
+/* -------------------- Account -------------------- */
+.accountHero{
+  margin-top: 18px;
+  padding: 22px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.96));
+}
+
+.accountHeroGrid{
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.8fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.accountHeroSide{
+  display: grid;
+}
+
+.accountHeroCard{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--shadow-2);
+}
+
+.accountHeroAvatar{
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: white;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.accountHeroText{
+  min-width: 0;
+}
+
+.accountHeroName{
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.accountHeroEmail{
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.accountLayout{
+  align-items: start;
+}
+
+.accountMainCard{
+  grid-column: span 2;
+}
+
+.accountInfoList{
+  display: grid;
+  gap: 12px;
+}
+
+.infoRow{
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(11,31,59,0.02);
+}
+
+.infoRowLabel{
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.infoRowValue{
+  font-weight: 700;
+  color: var(--navy);
+  word-break: break-word;
+}
+
+.accountActions{
+  margin-top: 6px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.accountTipsCard{
+  height: fit-content;
+}
+
+.accountTipsList{
+  display: grid;
+  gap: 12px;
+}
+
+.accountTip{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(11,31,59,0.02);
+}
+
+.accountTipTitle{
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.accountTipBody{
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 1100px){
+  .accountMainCard{
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 980px){
+  .accountHeroGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px){
+  .infoRow{
+    grid-template-columns: 1fr;
+  }
+
+  .accountActions{
+    flex-direction: column;
+  }
+
+  .accountActions .btn{
+    width: 100%;
+  }
 }
 
 /* -------------------- Jobs -------------------- */
@@ -569,4 +1172,89 @@ body{
   height: 4px;
   border-radius: 999px;
   background: rgba(11,31,59,0.35);
+}
+
+/* -------------------- Responsive -------------------- */
+@media (max-width: 980px){
+  .authPage{
+    grid-template-columns: 1fr;
+  }
+
+  .authRight{
+    order: -1;
+    min-height: 280px;
+    padding: 36px 24px;
+  }
+
+  .authBrand{
+    max-width: 100%;
+  }
+
+  .authBrand p{
+    max-width: 40ch;
+  }
+
+  .authLeft{
+    padding-top: 24px;
+    padding-bottom: 36px;
+  }
+}
+
+@media (max-width: 680px){
+  .page{
+    padding: 18px 14px 28px;
+  }
+
+  .topbar{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbarRight{
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .accountPill{
+    max-width: 100%;
+  }
+
+  .authLeft{
+    padding: 18px 14px 28px;
+  }
+
+  .authRight{
+    min-height: 220px;
+    padding: 28px 18px;
+  }
+
+  .authCard{
+    padding: 24px 18px;
+    border-radius: 22px;
+  }
+
+  .authHeader h2{
+    font-size: 1.9rem;
+  }
+
+  .authBrand h1{
+    font-size: 2.5rem;
+  }
+
+  .statsGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .jobTop,
+  .jobMeta,
+  .recentItem,
+  .empty{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer{
+    flex-wrap: wrap;
+  }
 }

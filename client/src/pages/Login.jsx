@@ -9,6 +9,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) =>
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -37,50 +38,28 @@ export default function Login() {
   };
 
   return (
-    <div className="page">
-      <header className="topbar">
-        <div className="brand">
-          <div className="brandMark" />
-          <div>
-            <h1 className="title">Job Tracker</h1>
-            <p className="subtitle">Track applications, interviews, and offers</p>
-          </div>
-        </div>
-
-        <div className="topbarRight">
-          <button
-            type="button"
-            className="btn btnGhost btnSmall"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </button>
-        </div>
-      </header>
-
-      {error && (
-        <div className="alert" role="alert">
-          <div className="alertTitle">Login failed</div>
-          <div className="alertBody">{error}</div>
-        </div>
-      )}
-
-      {/* ✅ centered */}
-      <main className="grid" style={{ justifyItems: "center" }}>
-        <section className="card" style={{ width: "100%", maxWidth: 420 }}>
-          <div className="cardHeader">
-            <h2 className="cardTitle">Login</h2>
-            <span className="cardHint">Welcome back</span>
+    <div className="authPage">
+      <div className="authLeft">
+        <div className="authCard">
+          <div className="authHeader">
+            <h2>Welcome back</h2>
+            <p>Log in to continue managing your applications and interviews.</p>
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="form"
-            style={{ gridTemplateColumns: "1fr" }}
-          >
+          {error && (
+            <div className="alert" role="alert">
+              <div className="alertTitle">Login failed</div>
+              <div className="alertBody">{error}</div>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="form authForm">
             <div className="field">
-              <div className="label">Email</div>
+              <label className="label" htmlFor="email">
+                Email
+              </label>
               <input
+                id="email"
                 className="input"
                 name="email"
                 type="email"
@@ -93,43 +72,60 @@ export default function Login() {
             </div>
 
             <div className="field">
-              <div className="label">Password</div>
-              <input
-                className="input"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={handleChange}
-                required
-                autoComplete="current-password"
-              />
+              <label className="label" htmlFor="password">
+                Password
+              </label>
+              <div className="passwordWrapper">
+                <input
+                  id="password"
+                  className="input passwordInput"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowPassword((p) => !p)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
 
-            <button className="btn btnPrimary" type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+            <button className="btn btnPrimary authSubmit" type="submit" disabled={loading}>
+              {loading ? "Logging in..." : "Log In"}
             </button>
 
-            <p style={{ margin: 0, fontSize: 14, color: "var(--muted)" }}>
+            <p className="authSwitch">
               Need an account?{" "}
               <button
                 type="button"
-                className="btn btnGhost btnSmall"
+                className="authSwitchLink"
                 onClick={() => navigate("/register")}
-                style={{ padding: "6px 10px" }}
               >
-                Register
+                Create one
               </button>
             </p>
           </form>
-        </section>
-      </main>
+        </div>
+      </div>
 
-      <footer className="footer">
-        <span>© {new Date().getFullYear()} Natalia Santiago</span>
-        <span className="dot" />
-        <span>React • Express • MongoDB</span>
-      </footer>
+      <div className="authRight">
+        <div className="authBrand">
+          <div className="brandMark large" />
+          <h1>Job Tracker</h1>
+          <p>
+            Keep your job search organized with a workspace designed to track progress,
+            manage interviews, and stay focused on the next opportunity.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

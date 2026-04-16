@@ -8,7 +8,6 @@ const STATUS_OPTIONS = ["applied", "interview", "offer", "rejected"];
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  /* -------------------- Auth gate -------------------- */
   const [token] = useState(() => localStorage.getItem("token") || "");
 
   useEffect(() => {
@@ -16,7 +15,6 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* -------------------- State -------------------- */
   const [jobs, setJobs] = useState([]);
   const [user, setUser] = useState(() => {
     try {
@@ -29,12 +27,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // UI controls
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [sort, setSort] = useState("newest"); // newest | oldest | company | status
+  const [sort, setSort] = useState("newest");
 
-  // Edit state
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({
     company: "",
@@ -43,15 +39,12 @@ export default function Dashboard() {
     notes: "",
   });
 
-  // Busy state (disable actions)
-  const [busyId, setBusyId] = useState(null); // job id being updated/deleted
+  const [busyId, setBusyId] = useState(null);
   const [exporting, setExporting] = useState(false);
 
-  // Toast
-  const [toast, setToast] = useState(null); // { type: "success" | "error", message: string }
+  const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
 
-  /* -------------------- Helpers -------------------- */
   const showToast = (type, message) => {
     setToast({ type, message });
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -85,7 +78,6 @@ export default function Dashboard() {
 
   const safeDate = (job) => job.updatedAt || job.createdAt || 0;
 
-  /* -------------------- Load user -------------------- */
   const loadUser = async () => {
     const t = localStorage.getItem("token");
     if (!t) return logout();
@@ -100,7 +92,6 @@ export default function Dashboard() {
     }
   };
 
-  /* -------------------- Load jobs -------------------- */
   const loadJobs = async () => {
     const t = localStorage.getItem("token");
     if (!t) return logout();
@@ -125,16 +116,13 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* -------------------- CRUD -------------------- */
   const updateJob = async (id, patch, successMsg = "Updated") => {
     setError("");
     setBusyId(id);
 
     try {
-      // Prefer PATCH (your backend now supports it)
       const res = await api.patch(`/jobs/${id}`, patch);
       const updated = res.data;
-
       setJobs((prev) => prev.map((j) => (j._id === id ? updated : j)));
       showToast("success", successMsg);
     } catch (err) {
@@ -195,7 +183,6 @@ export default function Dashboard() {
     cancelEdit();
   };
 
-  /* -------------------- CSV Export -------------------- */
   const exportCsv = async () => {
     setExporting(true);
     setError("");
@@ -203,8 +190,6 @@ export default function Dashboard() {
     try {
       const base = api.defaults.baseURL || "";
       const url = `${base}/jobs/export.csv`;
-
-      // Open in a new tab for download
       window.open(url, "_blank", "noopener,noreferrer");
       showToast("success", "Export started");
     } catch (err) {
@@ -214,7 +199,6 @@ export default function Dashboard() {
     }
   };
 
-  /* -------------------- Derived: filtering/sorting -------------------- */
   const filteredJobs = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = [...jobs];
@@ -243,8 +227,6 @@ export default function Dashboard() {
     return list;
   }, [jobs, query, statusFilter, sort]);
 
-  const jobCount = jobs.length;
-
   const stats = useMemo(() => {
     const counts = { applied: 0, interview: 0, offer: 0, rejected: 0 };
     for (const j of jobs) {
@@ -264,7 +246,19 @@ export default function Dashboard() {
     return list.slice(0, 5);
   }, [jobs]);
 
-  /* -------------------- UI -------------------- */
+  const greeting = useMemo(() => {
+    if (!user?.name) return "Welcome back";
+    const firstName = user.name.trim().split(/\s+/)[0];
+    return `Welcome back, ${firstName}`;
+  }, [user]);
+
+  const statusSummary = useMemo(() => {
+    if (!jobs.length) return "Start by adding your first job application.";
+    if (stats.counts.offer > 0) return "You’ve already got offers in progress — keep the momentum going.";
+    if (stats.counts.interview > 0) return "You’ve got interviews in motion — stay organized and follow up.";
+    return "Keep building your pipeline and tracking each opportunity.";
+  }, [jobs, stats]);
+
   if (!token) return null;
 
   return (
@@ -285,7 +279,6 @@ export default function Dashboard() {
               className="accountPill"
               onClick={() => navigate("/account")}
               title="View account"
-              style={{ cursor: "pointer" }}
             >
               <div className="accountAvatar">{initials}</div>
               <div className="accountText">
@@ -308,42 +301,62 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ✅ Toast */}
       {toast && (
         <div className={`toast toast--${toast.type}`} role="status" aria-live="polite">
           {toast.message}
         </div>
       )}
 
-      {/* ✅ 3 cards in a row */}
-      <main className="dashboardGrid">
-        {/* Overview */}
-        <section className="card">
-          <div className="cardHeader" style={{ alignItems: "center" }}>
-            <div style={{ minWidth: 0 }}>
-              <h2 className="cardTitle">Overview</h2>
-              <span className="cardHint">{jobCount} total jobs</span>
-            </div>
+      <section className="card dashboardHero">
+        <div className="dashboardHeroGrid">
+          <div>
+            <div className="dashboardEyebrow">Dashboard</div>
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <h2 className="dashboardHeading">{greeting}</h2>
+
+            <p className="dashboardSubtext">{statusSummary}</p>
+
+            <div className="dashboardHeroActions">
               <button
                 type="button"
-                className="btn btnGhost btnSmall"
+                className="btn btnPrimary"
+                onClick={() => navigate("/add-job")}
+              >
+                + Add Job
+              </button>
+
+              <button
+                type="button"
+                className="btn btnGhost"
                 onClick={exportCsv}
                 disabled={exporting || loading}
                 title="Download your jobs as CSV"
               >
                 {exporting ? "Exporting..." : "Export CSV"}
               </button>
-
-              <button
-                type="button"
-                className="btn btnPrimary btnSmall"
-                onClick={() => navigate("/add-job")}
-              >
-                + Add Job
-              </button>
             </div>
+          </div>
+
+          <div className="quickMetrics">
+            <QuickMetric label="Total jobs" value={stats.total} />
+            <QuickMetric label="Interviews" value={stats.counts.interview} />
+            <QuickMetric label="Offers" value={stats.counts.offer} />
+            <QuickMetric label="Offer rate" value={`${stats.offerRate}%`} />
+          </div>
+        </div>
+      </section>
+
+      <main className="dashboardGrid">
+        <section className="card">
+          <div className="cardHeader dashboardCardHeader">
+            <div className="dashboardCardHeaderMain">
+              <h2 className="cardTitle">Applications</h2>
+              <span className="cardHint">
+                {loading ? "Loading jobs..." : `${filteredJobs.length} of ${jobs.length} shown`}
+              </span>
+            </div>
+
+            <div className="sectionPill">Manage pipeline</div>
           </div>
 
           <div className="controlsRow">
@@ -407,10 +420,12 @@ export default function Dashboard() {
             <div className="empty">
               <div className="emptyIcon">+</div>
               <div>
-                <div className="emptyTitle">No matches</div>
-                <div className="emptyBody">Try clearing filters or add a new job.</div>
+                <div className="emptyTitle">No matches found</div>
+                <div className="emptyBody">
+                  Try clearing your filters or add a new job to continue building your tracker.
+                </div>
 
-                <div style={{ marginTop: 12 }}>
+                <div className="emptyAction">
                   <button
                     type="button"
                     className="btn btnPrimary"
@@ -430,7 +445,7 @@ export default function Dashboard() {
                 return (
                   <article className="jobCard" key={job._id}>
                     <div className="jobTop">
-                      <div style={{ minWidth: 0 }}>
+                      <div className="jobMain">
                         {isEditing ? (
                           <>
                             <input
@@ -440,11 +455,10 @@ export default function Dashboard() {
                                 setEditForm((p) => ({ ...p, company: e.target.value }))
                               }
                               placeholder="Company"
-                              style={{ marginBottom: 8 }}
                               disabled={isBusy}
                             />
                             <input
-                              className="input"
+                              className="input jobEditInput"
                               value={editForm.position}
                               onChange={(e) =>
                                 setEditForm((p) => ({ ...p, position: e.target.value }))
@@ -461,16 +475,14 @@ export default function Dashboard() {
                         )}
                       </div>
 
-                      {/* Inline status update */}
-                      <div style={{ display: "grid", gap: 8, justifyItems: "end" }}>
+                      <div className="jobStatusControl">
                         {isEditing ? (
                           <select
-                            className="input"
+                            className="input statusSelect"
                             value={editForm.status}
                             onChange={(e) =>
                               setEditForm((p) => ({ ...p, status: e.target.value }))
                             }
-                            style={{ padding: "8px 10px" }}
                             disabled={isBusy}
                           >
                             {STATUS_OPTIONS.map((s) => (
@@ -482,12 +494,11 @@ export default function Dashboard() {
                         ) : (
                           <>
                             <select
-                              className="input"
+                              className="input statusSelect"
                               value={job.status || "applied"}
                               onChange={(e) =>
                                 updateJob(job._id, { status: e.target.value }, "Status updated")
                               }
-                              style={{ padding: "8px 10px" }}
                               aria-label="Update status"
                               disabled={isBusy}
                             >
@@ -504,17 +515,15 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {/* Notes */}
                     {isEditing ? (
                       <textarea
-                        className="input textarea"
+                        className="input textarea jobNotesInput"
                         rows={4}
                         value={editForm.notes}
                         onChange={(e) =>
                           setEditForm((p) => ({ ...p, notes: e.target.value }))
                         }
                         placeholder="Notes"
-                        style={{ marginTop: 10 }}
                         disabled={isBusy}
                       />
                     ) : (
@@ -528,7 +537,6 @@ export default function Dashboard() {
                           : `Added ${new Date(job.createdAt).toLocaleDateString()}`}
                       </span>
 
-                      {/* Edit/Delete */}
                       <div className="jobButtons">
                         {isEditing ? (
                           <>
@@ -578,42 +586,55 @@ export default function Dashboard() {
           )}
         </section>
 
-        {/* Stats */}
         <section className="card">
           <div className="cardHeader">
-            <h2 className="cardTitle">Stats</h2>
-            <span className="cardHint">At a glance</span>
+            <h2 className="cardTitle">Performance Snapshot</h2>
+            <span className="cardHint">Your search at a glance</span>
           </div>
 
           {loading ? (
-            <div style={{ display: "grid", gap: 10 }}>
+            <div className="dashboardLoadingStack">
               <div className="skeletonLine w70" />
               <div className="skeletonLine w60" />
               <div className="skeletonLine w80" />
               <div className="skeletonLine w50" />
             </div>
           ) : (
-            <div className="statsGrid">
-              <Stat label="Total" value={stats.total} />
-              <Stat label="Active" value={stats.active} />
-              <Stat label="Offers" value={stats.counts.offer} />
-              <Stat label="Offer rate" value={`${stats.offerRate}%`} />
-              <Stat label="Applied" value={stats.counts.applied} />
-              <Stat label="Interviews" value={stats.counts.interview} />
-              <Stat label="Rejected" value={stats.counts.rejected} />
-            </div>
+            <>
+              <div className="statsGrid">
+                <Stat label="Total" value={stats.total} />
+                <Stat label="Active" value={stats.active} />
+                <Stat label="Offers" value={stats.counts.offer} />
+                <Stat label="Offer rate" value={`${stats.offerRate}%`} />
+                <Stat label="Applied" value={stats.counts.applied} />
+                <Stat label="Interviews" value={stats.counts.interview} />
+                <Stat label="Rejected" value={stats.counts.rejected} />
+              </div>
+
+              <div className="insightCard">
+                <div className="insightTitle">Insight</div>
+                <div className="insightBody">
+                  {stats.total === 0
+                    ? "You haven’t added any applications yet."
+                    : stats.counts.offer > 0
+                    ? "Your pipeline is converting into offers. Keep notes updated so you can compare opportunities clearly."
+                    : stats.counts.interview > 0
+                    ? "You’re making progress into interviews. Focus on follow-ups and interview prep notes."
+                    : "Your tracker is building momentum. Keep adding applications consistently to grow your pipeline."}
+                </div>
+              </div>
+            </>
           )}
         </section>
 
-        {/* Recent Activity */}
         <section className="card">
           <div className="cardHeader">
             <h2 className="cardTitle">Recent Activity</h2>
-            <span className="cardHint">Latest updates</span>
+            <span className="cardHint">Latest updates and edits</span>
           </div>
 
           {loading ? (
-            <div style={{ display: "grid", gap: 10 }}>
+            <div className="dashboardLoadingStack">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="recentRow">
                   <div className="skeletonLine w60" />
@@ -626,7 +647,7 @@ export default function Dashboard() {
               <div className="emptyIcon">+</div>
               <div>
                 <div className="emptyTitle">No activity yet</div>
-                <div className="emptyBody">Add a job to start tracking.</div>
+                <div className="emptyBody">Add a job to start tracking your search.</div>
               </div>
             </div>
           ) : (
@@ -676,6 +697,15 @@ function Stat({ label, value }) {
     <div className="statTile">
       <div className="statLabel">{label}</div>
       <div className="statValue">{value}</div>
+    </div>
+  );
+}
+
+function QuickMetric({ label, value }) {
+  return (
+    <div className="quickMetric">
+      <div className="quickMetricLabel">{label}</div>
+      <div className="quickMetricValue">{value}</div>
     </div>
   );
 }

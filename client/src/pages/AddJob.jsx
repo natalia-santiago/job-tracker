@@ -8,7 +8,6 @@ const STATUS_OPTIONS = ["applied", "interview", "offer", "rejected"];
 export default function AddJob() {
   const navigate = useNavigate();
 
-  /* -------------------- Auth gate -------------------- */
   const [token] = useState(() => localStorage.getItem("token") || "");
 
   useEffect(() => {
@@ -16,7 +15,6 @@ export default function AddJob() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* -------------------- User (for header) -------------------- */
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user"));
@@ -34,7 +32,6 @@ export default function AddJob() {
     return (first + last).toUpperCase() || "U";
   }, [user]);
 
-  /* -------------------- Form state -------------------- */
   const [form, setForm] = useState({
     company: "",
     position: "",
@@ -44,9 +41,7 @@ export default function AddJob() {
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
-  // Toast (optional, matches your Dashboard pattern)
-  const [toast, setToast] = useState(null); // { type: "success" | "error", message }
+  const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
 
   const showToast = (type, message) => {
@@ -55,7 +50,6 @@ export default function AddJob() {
     toastTimer.current = setTimeout(() => setToast(null), 2800);
   };
 
-  /* -------------------- Helpers -------------------- */
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -75,7 +69,6 @@ export default function AddJob() {
   const loadUser = async () => {
     const t = localStorage.getItem("token");
     if (!t) return logout();
-
     if (user?.email) return;
 
     try {
@@ -93,7 +86,20 @@ export default function AddJob() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* -------------------- Submit -------------------- */
+  const handleChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      company: "",
+      position: "",
+      status: "applied",
+      notes: "",
+    });
+    setError("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -106,17 +112,17 @@ export default function AddJob() {
     };
 
     if (!payload.company || !payload.position) {
-      const msg = "Company and Position are required.";
+      const msg = "Company and position are required.";
       setError(msg);
       showToast("error", msg);
       return;
     }
 
     setSaving(true);
+
     try {
       await api.post("/jobs", payload);
       showToast("success", "Job added");
-      // go back to dashboard after success
       navigate("/dashboard");
     } catch (err) {
       handleApiError(err, "Failed to add job");
@@ -125,13 +131,20 @@ export default function AddJob() {
     }
   };
 
-  /* -------------------- UI -------------------- */
   if (!token) return null;
 
   return (
     <div className="page">
       <header className="topbar">
-        <div className="brand" style={{ cursor: "pointer" }} onClick={() => navigate("/dashboard")}>
+        <div
+          className="brand brandButton"
+          onClick={() => navigate("/dashboard")}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate("/dashboard");
+          }}
+        >
           <div className="brandMark" />
           <div>
             <h1 className="title">Job Tracker</h1>
@@ -146,7 +159,6 @@ export default function AddJob() {
               className="accountPill"
               onClick={() => navigate("/account")}
               title="View account"
-              style={{ cursor: "pointer" }}
             >
               <div className="accountAvatar">{initials}</div>
               <div className="accountText">
@@ -175,85 +187,117 @@ export default function AddJob() {
         </div>
       )}
 
-      <main className="dashboardGrid">
-        <section className="card">
-          <div className="cardHeader" style={{ alignItems: "center" }}>
-            <div style={{ minWidth: 0 }}>
-              <h2 className="cardTitle">Add Job</h2>
-              <span className="cardHint">Create a new application entry</span>
-            </div>
-
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <button
-                type="button"
-                className="btn btnGhost btnSmall"
-                onClick={() => navigate("/dashboard")}
-                disabled={saving}
-              >
-                ← Back
-              </button>
-            </div>
+      <section className="card addJobHero">
+        <div className="addJobHeroGrid">
+          <div>
+            <div className="dashboardEyebrow">New application</div>
+            <h2 className="dashboardHeading">Add a job to your pipeline</h2>
+            <p className="dashboardSubtext">
+              Save the company, role, status, and notes so every opportunity stays
+              organized from the start.
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontWeight: 700 }}>Company</label>
+          <div className="addJobHeroSide">
+            <div className="quickMetric">
+              <div className="quickMetricLabel">Default status</div>
+              <div className="quickMetricValue addJobMetricValue">
+                {form.status.charAt(0).toUpperCase() + form.status.slice(1)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="dashboardGrid addJobLayout">
+        <section className="card addJobMainCard">
+          <div className="cardHeader dashboardCardHeader">
+            <div className="dashboardCardHeaderMain">
+              <h2 className="cardTitle">Application details</h2>
+              <span className="cardHint">Create a clean, searchable job entry</span>
+            </div>
+
+            <button
+              type="button"
+              className="btn btnGhost btnSmall"
+              onClick={() => navigate("/dashboard")}
+              disabled={saving}
+            >
+              ← Back
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="addJobForm">
+            <div className="field">
+              <label className="label" htmlFor="company">
+                Company
+              </label>
               <input
+                id="company"
                 className="input"
                 value={form.company}
-                onChange={(e) => setForm((p) => ({ ...p, company: e.target.value }))}
+                onChange={(e) => handleChange("company", e.target.value)}
                 placeholder="e.g., DLB Associates"
                 disabled={saving}
                 autoFocus
+                autoComplete="organization"
               />
             </div>
 
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontWeight: 700 }}>Position</label>
+            <div className="field">
+              <label className="label" htmlFor="position">
+                Position
+              </label>
               <input
+                id="position"
                 className="input"
                 value={form.position}
-                onChange={(e) => setForm((p) => ({ ...p, position: e.target.value }))}
+                onChange={(e) => handleChange("position", e.target.value)}
                 placeholder="e.g., Junior Full-Stack Developer"
                 disabled={saving}
+                autoComplete="off"
               />
             </div>
 
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontWeight: 700 }}>Status</label>
+            <div className="field fieldFull">
+              <label className="label" htmlFor="status">
+                Status
+              </label>
               <select
+                id="status"
                 className="input"
                 value={form.status}
-                onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
+                onChange={(e) => handleChange("status", e.target.value)}
                 disabled={saving}
               >
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontWeight: 700 }}>Notes</label>
+            <div className="field fieldFull">
+              <label className="label" htmlFor="notes">
+                Notes
+              </label>
               <textarea
-                className="input textarea"
-                rows={5}
+                id="notes"
+                className="input textarea addJobTextarea"
+                rows={6}
                 value={form.notes}
-                onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
-                placeholder="Interview dates, recruiter contact, links, reminders…"
+                onChange={(e) => handleChange("notes", e.target.value)}
+                placeholder="Interview dates, recruiter contact, links, reminders, application details..."
                 disabled={saving}
               />
             </div>
 
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 6 }}>
+            <div className="addJobActions fieldFull">
               <button
                 type="button"
                 className="btn btnGhost"
-                onClick={() =>
-                  setForm({ company: "", position: "", status: "applied", notes: "" })
-                }
+                onClick={resetForm}
                 disabled={saving}
               >
                 Clear
@@ -265,6 +309,36 @@ export default function AddJob() {
             </div>
           </form>
         </section>
+
+        <aside className="card addJobTipsCard">
+          <div className="cardHeader">
+            <h2 className="cardTitle">What to include</h2>
+            <span className="cardHint">Better notes, better tracking</span>
+          </div>
+
+          <div className="addJobTipsList">
+            <div className="addJobTip">
+              <div className="addJobTipTitle">Company and role</div>
+              <div className="addJobTipBody">
+                Use the exact employer and title so search and sorting stay clean later.
+              </div>
+            </div>
+
+            <div className="addJobTip">
+              <div className="addJobTipTitle">Status updates</div>
+              <div className="addJobTipBody">
+                Start with the current stage now and update it as the process moves.
+              </div>
+            </div>
+
+            <div className="addJobTip">
+              <div className="addJobTipTitle">Useful notes</div>
+              <div className="addJobTipBody">
+                Add recruiter names, deadlines, interview dates, links, or follow-up reminders.
+              </div>
+            </div>
+          </div>
+        </aside>
       </main>
 
       <footer className="footer">
