@@ -68,7 +68,7 @@ img{
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 24px 24px 38px;
+  padding: 24px 24px 36px;
 }
 
 .page > * + *{
@@ -529,7 +529,7 @@ select.input,
 }
 
 .btnGhost{
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.92);
   border-color: var(--border);
   color: var(--navy);
 }
@@ -881,7 +881,8 @@ select.input,
 }
 
 .addJobTextarea{
-  min-height: 128px;
+  min-height: 108px;
+  max-height: 220px;
 }
 
 .addJobActions{
@@ -1089,7 +1090,7 @@ select.input,
 .jobsGrid{
   display:grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .applicationsPanel{
@@ -1106,7 +1107,7 @@ select.input,
 .jobCard{
   border: 1px solid rgba(11,31,59,0.10);
   border-radius: var(--radius-sm);
-  padding: 12px 13px;
+  padding: 10px 12px;
   background: #fff;
   transition:
     transform var(--transition),
@@ -1124,7 +1125,7 @@ select.input,
 }
 
 .compactJobCard{
-  padding: 12px 13px;
+  padding: 10px 12px;
 }
 
 .jobTop{
@@ -1143,29 +1144,29 @@ select.input,
   font-weight: 800;
   color: var(--navy);
   font-size: 15px;
-  line-height: 1.22;
+  line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
 .jobPosition{
   color: var(--ink);
-  margin-top: 3px;
+  margin-top: 2px;
   font-size: 13px;
-  line-height: 1.42;
+  line-height: 1.36;
 }
 
 .jobNotes{
-  margin: 7px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
   font-size: 12.5px;
-  line-height: 1.5;
+  line-height: 1.48;
 }
 
 .jobMeta{
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
-  margin-top: 10px;
+  margin-top: 8px;
   gap: 10px;
 }
 
@@ -1193,8 +1194,8 @@ select.input,
 }
 
 .statusSelect{
-  min-width: 116px;
-  height: 38px;
+  min-width: 110px;
+  height: 36px;
   padding: 8px 12px;
   border-radius: 12px;
   border: 1px solid rgba(11,31,59,0.12);
@@ -1203,9 +1204,9 @@ select.input,
 }
 
 .jobNotesInput{
-  margin-top: 10px;
-  min-height: 84px;
-  max-height: 144px;
+  margin-top: 8px;
+  min-height: 80px;
+  max-height: 136px;
 }
 
 /* -------------------- Status Pills -------------------- */
@@ -1213,8 +1214,8 @@ select.input,
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height: 26px;
-  padding: 4px 10px;
+  min-height: 24px;
+  padding: 4px 9px;
   border-radius: 999px;
   font-size: 10.5px;
   font-weight: 800;
@@ -1389,7 +1390,7 @@ select.input,
   align-items:center;
   justify-content:center;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 14px;
   color: var(--muted);
   font-size: 12px;
   text-align: center;
@@ -1425,10 +1426,6 @@ select.input,
   background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,253,1));
 }
 
-.controlsRow .btnGhost{
-  min-height: 46px;
-}
-
 .controlsRow .input,
 .controlsRow .btnGhost,
 .controlsRow .statusSelect{
@@ -1440,6 +1437,16 @@ select.input,
   border-color: rgba(215,38,56,0.28);
 }
 
+.controlsRow .btnGhost{
+  min-height: 46px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.controlsRow .btnGhost:last-child{
+  background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,253,1));
+}
+
 /* -------------------- Responsive -------------------- */
 @media (min-width: 680px){
   .form{
@@ -1449,7 +1456,7 @@ select.input,
 
 @media (min-width: 740px){
   .controlsRow{
-    grid-template-columns: minmax(240px, 1.75fr) minmax(150px, 0.92fr) minmax(150px, 0.98fr) auto;
+    grid-template-columns: minmax(240px, 1.8fr) minmax(140px, 0.95fr) minmax(140px, 0.95fr) auto;
     align-items:center;
   }
 }
