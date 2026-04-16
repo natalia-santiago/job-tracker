@@ -1447,6 +1447,385 @@ select.input,
   background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,253,1));
 }
 
+/* -------------------- Final UX Polish -------------------- */
+
+/* tighter, more premium motion */
+.card,
+.jobCard,
+.recentItem,
+.btn,
+.accountPill,
+.input,
+.statusSelect{
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+/* better tap feedback on mobile */
+@media (hover: none){
+  .btn:active,
+  .jobCard:active,
+  .recentItem:active,
+  .accountPill:active{
+    transform: scale(0.985);
+  }
+}
+
+/* dashboard application list: improve scanability */
+.jobsGrid{
+  gap: 10px;
+}
+
+.jobCard{
+  padding: 11px 12px;
+  border-color: rgba(11,31,59,0.09);
+}
+
+.jobCard + .jobCard{
+  margin-top: 0;
+}
+
+.jobCompany{
+  font-size: 15px;
+  line-height: 1.22;
+}
+
+.jobPosition{
+  font-size: 12.75px;
+  color: rgba(10,16,32,0.88);
+}
+
+.jobNotes{
+  color: rgba(95,111,136,0.92);
+}
+
+.jobDate{
+  color: rgba(123,136,160,0.92);
+}
+
+/* make secondary info quieter for cleaner hierarchy */
+.subtitle,
+.dashboardSubtext,
+.emptyBody,
+.alertBody,
+.addJobTipBody,
+.accountTipBody,
+.insightBody,
+.recentSub{
+  color: rgba(95,111,136,0.94);
+}
+
+/* stronger list/card rhythm */
+.cardHeader{
+  padding-bottom: 11px;
+  margin-bottom: 12px;
+}
+
+/* cleaner CTA rhythm */
+.addJobActions{
+  margin-top: 8px;
+}
+
+.accountActions{
+  margin-top: 10px;
+}
+
+/* primary buttons feel slightly more premium */
+.btnPrimary{
+  box-shadow: 0 12px 24px rgba(215,38,56,0.18);
+}
+
+.btnPrimary:hover{
+  box-shadow: 0 16px 28px rgba(215,38,56,0.24);
+}
+
+/* input polish */
+.input,
+.statusSelect{
+  background: linear-gradient(180deg, rgba(255,255,255,1), rgba(252,253,255,1));
+}
+
+.input::placeholder,
+.textarea::placeholder{
+  color: rgba(11,31,59,0.30);
+}
+
+/* account/details cards: slightly cleaner rhythm */
+.infoRow{
+  min-height: 56px;
+}
+
+.accountHeroCard{
+  border-radius: 20px;
+}
+
+/* footer polish */
+.footer{
+  opacity: 0.96;
+}
+
+/* -------------------- Final Responsive Polish -------------------- */
+
+@media (max-width: 760px){
+  .jobPosition{
+    font-size: 12.5px;
+  }
+
+  .jobNotes{
+    font-size: 12px;
+    line-height: 1.44;
+  }
+
+  .pill{
+    min-height: 23px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 680px){
+  .topbar{
+    gap: 14px;
+  }
+
+  .brand{
+    gap: 12px;
+  }
+
+  .title{
+    font-size: 19px;
+  }
+
+  .subtitle{
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .dashboardHero,
+  .addJobHero,
+  .accountHero,
+  .card{
+    padding: 18px 16px;
+  }
+
+  .dashboardHeading{
+    letter-spacing: -0.045em;
+  }
+
+  .dashboardSubtext{
+    margin-top: 10px;
+    font-size: 0.97rem;
+  }
+
+  .quickMetric{
+    padding: 13px;
+  }
+
+  .quickMetricValue{
+    font-size: 21px;
+  }
+
+  .jobCard,
+  .compactJobCard{
+    padding: 9px 10px;
+  }
+
+  .jobMeta{
+    margin-top: 7px;
+  }
+
+  .addJobActions,
+  .accountActions{
+    gap: 10px;
+  }
+
+  .btn,
+  .btnPrimary,
+  .btnGhost,
+  .btnDanger{
+    min-height: 46px;
+  }
+
+  .footer{
+    margin-top: 12px;
+    gap: 7px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 520px){
+  .authRight{
+    min-height: 240px;
+    padding: 22px 16px;
+  }
+
+  .authBrand{
+    max-width: 100%;
+  }
+
+  .authBrand h1{
+    font-size: 2rem;
+    margin-top: 18px;
+  }
+
+  .authBrand p{
+    margin-top: 14px;
+    font-size: 1rem;
+    line-height: 1.62;
+    max-width: 24ch;
+  }
+
+  .authCard{
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
+
+  .authHeader{
+    margin-bottom: 18px;
+  }
+
+  .authHeader h2{
+    font-size: 1.72rem;
+    line-height: 1.06;
+  }
+
+  .authHeader p{
+    margin-top: 10px;
+    font-size: 0.98rem;
+    line-height: 1.58;
+  }
+
+  .input{
+    height: 43px;
+    border-radius: 14px;
+  }
+
+  .textarea{
+    min-height: 104px;
+    border-radius: 14px;
+  }
+
+  .quickMetric,
+  .statTile,
+  .recentItem,
+  .addJobTip,
+  .accountTip,
+  .infoRow{
+    padding: 12px;
+  }
+
+  .accountHeroCard{
+    padding: 16px;
+  }
+
+  .accountHeroAvatar{
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (max-width: 420px){
+  .page{
+    padding: 12px 10px 20px;
+  }
+
+  .topbar{
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .brandMark.large{
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+  }
+
+  .title{
+    font-size: 18px;
+  }
+
+  .subtitle{
+    font-size: 12px;
+  }
+
+  .dashboardHero,
+  .addJobHero,
+  .accountHero,
+  .card,
+  .authCard{
+    padding: 14px 12px;
+    border-radius: 18px;
+  }
+
+  .authRight{
+    min-height: 210px;
+    padding: 18px 14px;
+  }
+
+  .authBrand h1{
+    font-size: 1.85rem;
+  }
+
+  .authBrand p{
+    font-size: 0.96rem;
+    line-height: 1.56;
+    max-width: 22ch;
+  }
+
+  .authHeader h2,
+  .dashboardHeading{
+    font-size: 1.56rem;
+  }
+
+  .dashboardSubtext{
+    font-size: 0.95rem;
+    line-height: 1.58;
+  }
+
+  .btn,
+  .btnPrimary,
+  .btnGhost,
+  .btnDanger{
+    min-height: 44px;
+  }
+
+  .jobCard,
+  .compactJobCard{
+    padding: 8px 9px;
+    border-radius: 13px;
+  }
+
+  .jobCompany{
+    font-size: 14px;
+  }
+
+  .jobPosition{
+    font-size: 12px;
+  }
+
+  .jobNotes{
+    font-size: 11.75px;
+  }
+
+  .statusSelect{
+    min-width: 0;
+    height: 34px;
+    font-size: 12.5px;
+  }
+
+  .pill{
+    font-size: 10px;
+  }
+
+  .footer{
+    font-size: 0.86rem;
+  }
+}
+
 /* -------------------- Responsive -------------------- */
 @media (min-width: 680px){
   .form{
