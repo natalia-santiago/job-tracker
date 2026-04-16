@@ -1457,7 +1457,7 @@ select.input,
 @media (min-width: 740px){
   .controlsRow{
     grid-template-columns: minmax(240px, 1.8fr) minmax(140px, 0.95fr) minmax(140px, 0.95fr) auto;
-    align-items:center;
+    align-items: center;
   }
 }
 
@@ -1552,7 +1552,7 @@ select.input,
   }
 
   .cardHeader{
-    align-items:flex-start;
+    align-items: flex-start;
   }
 
   .cardHint{
@@ -1563,19 +1563,21 @@ select.input,
 
 @media (max-width: 680px){
   .page{
-    padding: 18px 14px 30px;
+    padding: 16px 14px 26px;
   }
 
   .topbar{
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px;
+    padding: 14px;
+    gap: 12px;
   }
 
   .topbarRight{
     width: 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
+    gap: 10px;
   }
 
   .accountPill{
@@ -1583,41 +1585,59 @@ select.input,
   }
 
   .accountSecondary{
-    max-width: 150px;
+    max-width: 100%;
   }
 
   .authLeft{
-    padding: 18px 14px 30px;
+    padding: 18px 14px 28px;
   }
 
   .authRight{
-    min-height: 230px;
-    padding: 28px 18px;
+    min-height: 220px;
+    padding: 24px 18px;
   }
 
   .authCard{
-    padding: 24px 18px;
-    border-radius: 24px;
+    padding: 22px 18px;
+    border-radius: 22px;
   }
 
   .authHeader h2{
-    font-size: 1.92rem;
+    font-size: 1.9rem;
+    line-height: 1.08;
   }
 
   .authBrand h1{
-    font-size: 2.5rem;
+    font-size: 2.3rem;
+    line-height: 1.02;
+  }
+
+  .authBrand p{
+    font-size: 1rem;
+    line-height: 1.68;
   }
 
   .dashboardHero,
   .addJobHero,
   .accountHero,
   .card{
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 18px 16px;
+    border-radius: 22px;
   }
 
   .dashboardHeading{
-    font-size: clamp(1.82rem, 8vw, 2.2rem);
+    font-size: clamp(1.7rem, 7vw, 2.05rem);
+    line-height: 1.06;
+  }
+
+  .dashboardSubtext,
+  .accountHeroEmail,
+  .addJobTipBody,
+  .accountTipBody,
+  .insightBody,
+  .emptyBody,
+  .alertBody{
+    line-height: 1.62;
   }
 
   .statsGrid,
@@ -1632,6 +1652,7 @@ select.input,
   .addJobActions{
     justify-content: stretch;
     flex-direction: column-reverse;
+    gap: 10px;
   }
 
   .addJobActions .btn,
@@ -1646,6 +1667,12 @@ select.input,
 
   .accountActions{
     flex-direction: column;
+    gap: 10px;
+  }
+
+  .jobCard,
+  .compactJobCard{
+    padding: 9px 11px;
   }
 
   .jobTop,
@@ -1665,12 +1692,36 @@ select.input,
     width: 100%;
   }
 
-  .recentTitle{
+  .recentTitle,
+  .accountHeroEmail,
+  .accountSecondary,
+  .infoRowValue{
     white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .input{
+    height: 44px;
+    padding: 13px 14px;
+  }
+
+  .textarea{
+    min-height: 110px;
+    padding: 13px 14px;
+  }
+
+  .btn,
+  .btnPrimary,
+  .btnGhost,
+  .btnDanger{
+    min-height: 46px;
   }
 
   .footer{
     flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.92rem;
   }
 }
 
@@ -1690,6 +1741,7 @@ select.input,
   .dashboardHeroActions{
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
 
   .dashboardHeroActions .btn{
@@ -1707,6 +1759,88 @@ select.input,
   }
 
   .topbarRight{
-    gap: 10px;
+    gap: 8px;
+  }
+
+  .dashboardHero,
+  .addJobHero,
+  .accountHero,
+  .card,
+  .authCard{
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .authBrand h1{
+    font-size: 2.1rem;
+  }
+
+  .authHeader h2,
+  .dashboardHeading{
+    font-size: 1.78rem;
+  }
+
+  .quickMetric,
+  .statTile,
+  .recentItem,
+  .addJobTip,
+  .accountTip,
+  .infoRow{
+    padding: 12px;
+  }
+}
+
+@media (max-width: 420px){
+  .page{
+    padding: 12px 10px 22px;
+  }
+
+  .dashboardHero,
+  .addJobHero,
+  .accountHero,
+  .card,
+  .authCard{
+    padding: 14px 12px;
+    border-radius: 18px;
+  }
+
+  .authRight{
+    padding: 20px 16px;
+    min-height: 200px;
+  }
+
+  .authBrand h1{
+    font-size: 1.95rem;
+  }
+
+  .authHeader h2,
+  .dashboardHeading{
+    font-size: 1.6rem;
+  }
+
+  .btn,
+  .btnPrimary,
+  .btnGhost,
+  .btnDanger{
+    min-height: 44px;
+  }
+
+  .jobCard,
+  .compactJobCard{
+    padding: 8px 10px;
+  }
+
+  .input{
+    height: 42px;
+    padding: 12px 13px;
+  }
+
+  .textarea{
+    min-height: 104px;
+    padding: 12px 13px;
+  }
+
+  .footer{
+    font-size: 0.88rem;
   }
 }
