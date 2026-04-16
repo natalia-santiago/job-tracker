@@ -68,11 +68,11 @@ img{
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 28px 24px 44px;
+  padding: 24px 24px 38px;
 }
 
 .page > * + *{
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 /* -------------------- Top Bar -------------------- */
@@ -204,28 +204,28 @@ img{
 .grid{
   display:grid;
   grid-template-columns: 1fr;
-  gap: 18px;
+  gap: 16px;
 }
 
 .dashboardGrid{
   display:grid;
-  gap: 18px;
+  gap: 16px;
   grid-template-columns: 1fr;
 }
 
 .dashboardDesktopGrid{
   display:grid;
-  gap: 18px;
-  grid-template-columns: minmax(0, 1.55fr) minmax(360px, 1fr);
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.56fr) minmax(368px, 0.98fr);
   align-items: start;
 }
 
 .dashboardSideColumn{
   display:grid;
-  gap: 16px;
+  gap: 14px;
   align-self: start;
   position: sticky;
-  top: 24px;
+  top: 20px;
 }
 
 /* -------------------- Cards -------------------- */
@@ -234,7 +234,7 @@ img{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 16px;
   backdrop-filter: blur(8px);
 }
 
@@ -245,7 +245,7 @@ img{
   gap: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(11,31,59,0.09);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .cardTitle{
@@ -466,11 +466,11 @@ select.input,
 .controlsRow{
   display:grid;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .controlsRowTight{
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 /* -------------------- Buttons -------------------- */
@@ -551,7 +551,7 @@ select.input,
 }
 
 .btnSmall{
-  min-height: 38px;
+  min-height: 36px;
   padding: 8px 12px;
   font-size: 13px;
   height: auto;
@@ -731,14 +731,14 @@ select.input,
 
 /* -------------------- Dashboard Hero -------------------- */
 .dashboardHero{
-  padding: 28px 28px 30px;
+  padding: 26px 28px 28px;
   background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.94));
 }
 
 .dashboardHeroGrid{
   display:grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.95fr);
-  gap: 20px;
+  gap: 18px;
   align-items: center;
 }
 
@@ -753,30 +753,30 @@ select.input,
   color: var(--navy);
   font-size: 12px;
   font-weight: 700;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .dashboardHeading{
   margin: 0;
   color: var(--navy);
-  font-size: clamp(2rem, 3vw, 2.95rem);
+  font-size: clamp(2rem, 3vw, 2.9rem);
   line-height: 1.02;
   letter-spacing: -0.05em;
 }
 
 .dashboardSubtext{
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.68;
-  max-width: 60ch;
+  font-size: 0.99rem;
+  line-height: 1.66;
+  max-width: 58ch;
 }
 
 .dashboardHeroActions{
   display:flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .quickMetrics{
@@ -786,7 +786,7 @@ select.input,
 }
 
 .quickMetric{
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11,31,59,0.10);
   border-radius: 16px;
   padding: 14px;
   background: rgba(255,255,255,0.98);
@@ -802,7 +802,7 @@ select.input,
 .quickMetricValue{
   margin-top: 8px;
   color: var(--navy);
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 1;
@@ -823,11 +823,11 @@ select.input,
 }
 
 .insightCard{
-  margin-top: 14px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 14px 15px;
   border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(11,31,59,0.03);
+  border: 1px solid rgba(11,31,59,0.10);
+  background: linear-gradient(180deg, rgba(11,31,59,0.028), rgba(11,31,59,0.016));
 }
 
 .insightTitle{
@@ -841,19 +841,19 @@ select.input,
 .insightBody{
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.65;
+  line-height: 1.62;
 }
 
 /* -------------------- Add Job -------------------- */
 .addJobHero{
-  padding: 24px 26px;
+  padding: 22px 26px;
   background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.94));
 }
 
 .addJobHeroGrid{
   display:grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(250px, 0.82fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1.42fr) minmax(250px, 0.8fr);
+  gap: 18px;
   align-items: center;
 }
 
@@ -862,11 +862,12 @@ select.input,
 }
 
 .addJobMetricValue{
-  font-size: 1.3rem;
+  font-size: 1.26rem;
 }
 
 .addJobLayout{
   align-items: start;
+  gap: 14px;
 }
 
 .addJobMainCard{
@@ -880,29 +881,30 @@ select.input,
 }
 
 .addJobTextarea{
-  min-height: 140px;
+  min-height: 128px;
 }
 
 .addJobActions{
   display:flex;
   justify-content:flex-end;
-  gap: 12px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .addJobTipsCard{
   height: fit-content;
+  max-width: 720px;
 }
 
 .addJobTipsList{
   display:grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .addJobTip{
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11,31,59,0.10);
   border-radius: 14px;
-  padding: 14px;
+  padding: 13px 14px;
   background: rgba(11,31,59,0.02);
 }
 
@@ -910,25 +912,25 @@ select.input,
   font-size: 13px;
   font-weight: 800;
   color: var(--navy);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .addJobTipBody{
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.58;
 }
 
 /* -------------------- Account -------------------- */
 .accountHero{
-  padding: 24px 26px;
+  padding: 22px 26px;
   background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,249,252,0.94));
 }
 
 .accountHeroGrid{
   display:grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.8fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.82fr);
+  gap: 18px;
   align-items: center;
 }
 
@@ -942,11 +944,11 @@ select.input,
   align-items:center;
   gap: 14px;
   padding: 18px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11,31,59,0.10);
   border-radius: 18px;
   background: #fff;
   box-shadow: var(--shadow-2);
-  max-width: 410px;
+  max-width: 372px;
   width: 100%;
 }
 
@@ -984,6 +986,7 @@ select.input,
 
 .accountLayout{
   align-items: start;
+  gap: 14px;
 }
 
 .accountMainCard{
@@ -1003,9 +1006,9 @@ select.input,
   align-items: center;
   padding: 13px 16px;
   border-radius: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11,31,59,0.10);
   background: rgba(11,31,59,0.02);
-  min-height: 56px;
+  min-height: 54px;
 }
 
 .infoRowLabel{
@@ -1037,10 +1040,10 @@ select.input,
 }
 
 .accountTip{
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11,31,59,0.10);
   border-radius: 14px;
   padding: 14px;
-  background: rgba(11,31,59,0.02);
+  background: linear-gradient(180deg, rgba(11,31,59,0.028), rgba(11,31,59,0.016));
 }
 
 .accountTipTitle{
@@ -1086,7 +1089,7 @@ select.input,
 .jobsGrid{
   display:grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .applicationsPanel{
@@ -1094,7 +1097,7 @@ select.input,
 }
 
 .applicationsScroller{
-  max-height: 980px;
+  max-height: 930px;
   overflow-y: auto;
   padding-right: 6px;
   scroll-behavior: smooth;
@@ -1103,7 +1106,7 @@ select.input,
 .jobCard{
   border: 1px solid rgba(11,31,59,0.10);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 12px 13px;
   background: #fff;
   transition:
     transform var(--transition),
@@ -1114,21 +1117,21 @@ select.input,
 }
 
 .jobCard:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(10,16,32,0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(10,16,32,0.07);
   background: rgba(11,31,59,0.015);
   border-color: rgba(11,31,59,0.14);
 }
 
 .compactJobCard{
-  padding: 14px;
+  padding: 12px 13px;
 }
 
 .jobTop{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  gap: 14px;
+  gap: 12px;
 }
 
 .jobMain{
@@ -1139,31 +1142,31 @@ select.input,
 .jobCompany{
   font-weight: 800;
   color: var(--navy);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.22;
   letter-spacing: -0.02em;
 }
 
 .jobPosition{
   color: var(--ink);
-  margin-top: 4px;
-  font-size: 13.5px;
-  line-height: 1.45;
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.42;
 }
 
 .jobNotes{
-  margin: 8px 0 0;
+  margin: 7px 0 0;
   color: var(--muted);
   font-size: 12.5px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .jobMeta{
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
-  margin-top: 12px;
-  gap: 12px;
+  margin-top: 10px;
+  gap: 10px;
 }
 
 .jobButtons{
@@ -1178,28 +1181,31 @@ select.input,
 }
 
 .jobEditInput{
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .jobStatusControl{
   display:grid;
-  gap: 10px;
+  gap: 8px;
   justify-items: end;
   align-items: start;
   flex-shrink: 0;
 }
 
 .statusSelect{
-  min-width: 128px;
-  height: 40px;
+  min-width: 116px;
+  height: 38px;
   padding: 8px 12px;
   border-radius: 12px;
+  border: 1px solid rgba(11,31,59,0.12);
+  background-color: #fff;
+  font-size: 13px;
 }
 
 .jobNotesInput{
   margin-top: 10px;
-  min-height: 96px;
-  max-height: 160px;
+  min-height: 84px;
+  max-height: 144px;
 }
 
 /* -------------------- Status Pills -------------------- */
@@ -1207,10 +1213,10 @@ select.input,
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height: 28px;
-  padding: 5px 10px;
+  min-height: 26px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 800;
   border: 1px solid var(--border);
   white-space: nowrap;
@@ -1244,14 +1250,14 @@ select.input,
 .statsGrid{
   display:grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .statTile{
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11,31,59,0.10);
   border-radius: 14px;
   padding: 12px;
-  background: rgba(11,31,59,0.02);
+  background: linear-gradient(180deg, rgba(11,31,59,0.02), rgba(11,31,59,0.01));
 }
 
 .statLabel{
@@ -1262,7 +1268,7 @@ select.input,
 
 .statValue{
   margin-top: 8px;
-  font-size: 20px;
+  font-size: 19px;
   color: var(--navy);
   font-weight: 900;
   letter-spacing: -0.03em;
@@ -1272,7 +1278,7 @@ select.input,
 /* -------------------- Recent Activity -------------------- */
 .recentList{
   display:grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .recentListCompact{
@@ -1288,7 +1294,7 @@ select.input,
   gap: 12px;
   border: 1px solid rgba(11,31,59,0.10);
   border-radius: 14px;
-  padding: 12px;
+  padding: 11px 12px;
   background: #fff;
   cursor: pointer;
   transition:
@@ -1313,7 +1319,7 @@ select.input,
   font-weight: 800;
   color: var(--navy);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.38;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1383,7 +1389,7 @@ select.input,
   align-items:center;
   justify-content:center;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 16px;
   color: var(--muted);
   font-size: 12px;
   text-align: center;
@@ -1397,6 +1403,43 @@ select.input,
   flex-shrink: 0;
 }
 
+/* -------------------- Dashboard / Panel Polish -------------------- */
+.applicationsPanel .cardHeader,
+.dashboardSideColumn .cardHeader{
+  margin-bottom: 12px;
+}
+
+.applicationsPanel .cardHint{
+  font-size: 11.5px;
+}
+
+.dashboardSideColumn .card,
+.dashboardSideColumn .insightCard,
+.dashboardSideColumn .statTile,
+.dashboardSideColumn .recentItem{
+  box-shadow: 0 10px 20px rgba(10,16,32,0.045);
+}
+
+.controlsRow .input,
+.controlsRow .statusSelect{
+  background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,253,1));
+}
+
+.controlsRow .btnGhost{
+  min-height: 46px;
+}
+
+.controlsRow .input,
+.controlsRow .btnGhost,
+.controlsRow .statusSelect{
+  border-color: rgba(11,31,59,0.11);
+}
+
+.controlsRow .input:focus,
+.controlsRow .statusSelect:focus{
+  border-color: rgba(215,38,56,0.28);
+}
+
 /* -------------------- Responsive -------------------- */
 @media (min-width: 680px){
   .form{
@@ -1406,7 +1449,7 @@ select.input,
 
 @media (min-width: 740px){
   .controlsRow{
-    grid-template-columns: minmax(240px, 1.65fr) minmax(150px, 0.9fr) minmax(150px, 0.95fr) auto;
+    grid-template-columns: minmax(240px, 1.75fr) minmax(150px, 0.92fr) minmax(150px, 0.98fr) auto;
     align-items:center;
   }
 }
@@ -1452,6 +1495,10 @@ select.input,
 
   .quickMetrics{
     max-width: 520px;
+  }
+
+  .addJobTipsCard{
+    max-width: none;
   }
 
   .authPage{
